@@ -1,0 +1,141 @@
+---
+import { CORES_IDENTIDADE } from "../config/site";
+import Icon from "./Icon.astro";
+---
+
+<section
+  class="secao identidade cobre-mascote"
+  id="identidade"
+  aria-labelledby="titulo-identidade"
+>
+  <div class="container identidade-grade">
+    <div>
+      <span class="kicker azul"><Icon name="brilho" size={15} /> Identidade</span>
+      <h2 class="titulo-secao" id="titulo-identidade">
+        As cores da nossa identidade
+      </h2>
+      <p class="subtitulo-secao">
+        Unindo escola, família e saúde para formar cidadãos mais saudáveis,
+        conscientes e felizes.
+      </p>
+
+      <ul class="lista-cores">
+        {
+          CORES_IDENTIDADE.map((c) => (
+            <li>
+              <span class={`amostra amostra-${c.classe}`} aria-hidden="true" />
+              <div>
+                <strong>{c.nome}</strong>
+                <span>{c.significado}</span>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <aside class="cartao-valores" aria-label="Valores do programa">
+      <h3>Juntos por nossas crianças</h3>
+      <p>
+        Uma iniciativa pública do município de Nova Santa Rita, construída
+        com escuta, cuidado e participação de educadores, famílias e
+        profissionais de saúde.
+      </p>
+      <p class="cartao-valores-nota">
+        <!-- [PLACEHOLDER] Incluir aqui, quando confirmadas, as secretarias
+             municipais responsaveis pela iniciativa. -->
+        Gestão municipal — Prefeitura de Nova Santa Rita
+      </p>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .identidade {
+    background: linear-gradient(180deg, #fbf7ee 0%, var(--papel) 100%);
+    border-block: 1px solid var(--linha);
+  }
+
+  .identidade-grade {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+
+  .lista-cores {
+    list-style: none;
+    padding: 0;
+    margin-top: 1.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .lista-cores li {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    background: var(--nuvem);
+    border: 1.5px solid var(--linha);
+    border-radius: var(--raio-pilula);
+    padding: 0.5rem 1.1rem 0.5rem 0.55rem;
+    box-shadow: 0 2px 0 var(--linha);
+    max-width: 24rem;
+  }
+
+  .amostra {
+    flex: none;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    box-shadow: inset 0 -3px 0 rgb(0 0 0 / 0.15);
+  }
+  .amostra-verde { background: var(--verde); }
+  .amostra-azul { background: var(--azul); }
+  .amostra-amarelo { background: var(--amarelo); }
+  .amostra-laranja { background: var(--laranja); }
+  .amostra-roxo { background: var(--roxo); }
+
+  .lista-cores strong {
+    display: block;
+    font-size: 0.98rem;
+  }
+
+  .lista-cores div span {
+    font-size: 0.86rem;
+    color: var(--tinta-suave);
+  }
+
+  .cartao-valores {
+    background:
+      radial-gradient(circle at 85% 15%, rgb(247 201 72 / 0.3), transparent 50%),
+      linear-gradient(150deg, var(--verde) 0%, var(--verde-escuro) 100%);
+    color: #fff;
+    border-radius: var(--raio-l);
+    padding: clamp(1.8rem, 4vw, 2.8rem);
+    box-shadow: var(--sombra-levantada);
+  }
+
+  .cartao-valores h3 {
+    font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+  }
+
+  .cartao-valores p {
+    margin-top: 0.9rem;
+    color: rgb(255 255 255 / 0.92);
+  }
+
+  .cartao-valores-nota {
+    border-top: 1.5px dashed rgb(255 255 255 / 0.45);
+    padding-top: 0.9rem;
+    font-size: 0.88rem;
+    font-weight: 700;
+  }
+
+  @media (max-width: 48rem) {
+    .identidade-grade {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

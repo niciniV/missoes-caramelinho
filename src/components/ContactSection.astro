@@ -1,0 +1,152 @@
+---
+import { CONTATO, SITE } from "../config/site";
+import Icon from "./Icon.astro";
+
+// [PLACEHOLDER] Enquanto os canais oficiais nao forem confirmados,
+// exibimos um cartao informativo generico. Quando CONTATO estiver
+// preenchido em src/config/site.ts, os dados aparecem automaticamente.
+const temContato = Boolean(
+  CONTATO.email || CONTATO.telefone || CONTATO.sitePrefeitura,
+);
+---
+
+<section class="secao contato" id="contato" aria-labelledby="titulo-contato">
+  <div class="container contato-grade">
+    <div>
+      <span class="kicker"><Icon name="coracao" size={15} /> Contato</span>
+      <h2 class="titulo-secao" id="titulo-contato">Quer saber mais?</h2>
+      <p class="subtitulo-secao">
+        Escolas, educadores, famílias e profissionais de saúde que quiserem
+        acompanhar ou participar do projeto podem falar com a equipe do
+        município pelos canais oficiais.
+      </p>
+    </div>
+
+    <div class="cartao-contato">
+      {
+        temContato ? (
+          <ul class="lista-contato">
+            {CONTATO.orgaoResponsavel && (
+              <li>
+                <Icon name="ponte" size={20} />
+                <span>{CONTATO.orgaoResponsavel}</span>
+              </li>
+            )}
+            {CONTATO.email && (
+              <li>
+                <Icon name="seta" size={20} />
+                <a href={`mailto:${CONTATO.email}`}>{CONTATO.email}</a>
+              </li>
+            )}
+            {CONTATO.telefone && (
+              <li>
+                <Icon name="check" size={20} />
+                <span>{CONTATO.telefone}</span>
+              </li>
+            )}
+            {CONTATO.endereco && (
+              <li>
+                <Icon name="familias" size={20} />
+                <span>{CONTATO.endereco}</span>
+              </li>
+            )}
+            {CONTATO.sitePrefeitura && (
+              <li>
+                <Icon name="seta" size={20} />
+                <a href={CONTATO.sitePrefeitura} rel="noopener">
+                  Site da Prefeitura
+                </a>
+              </li>
+            )}
+          </ul>
+        ) : (
+          <>
+            <span class="contato-icone">
+              <Icon name="maos" size={34} />
+            </span>
+            <h3>Canais oficiais em definição</h3>
+            <p>
+              Este espaço será atualizado com os contatos da equipe
+              responsável pelo {SITE.nome}. Enquanto isso, procure a
+              Prefeitura de Nova Santa Rita pelos canais institucionais já
+              existentes.
+            </p>
+            {/* [PLACEHOLDER] Substituir por e-mail, telefone e endereco
+                oficiais em src/config/site.ts (constante CONTATO). */}
+          </>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .contato {
+    background: var(--papel);
+  }
+
+  .contato-grade {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+
+  .cartao-contato {
+    background: var(--nuvem);
+    border: 1.5px dashed var(--verde);
+    border-radius: var(--raio-l);
+    padding: clamp(1.6rem, 4vw, 2.4rem);
+    text-align: center;
+    box-shadow: var(--sombra-card);
+  }
+
+  .contato-icone {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 4.2rem;
+    height: 4.2rem;
+    border-radius: 50%;
+    background: var(--verde-claro);
+    color: var(--verde-escuro);
+  }
+
+  .cartao-contato h3 {
+    margin-top: 1rem;
+    font-size: 1.25rem;
+  }
+
+  .cartao-contato p {
+    margin-top: 0.5rem;
+    color: var(--tinta-suave);
+    font-size: 0.95rem;
+  }
+
+  .lista-contato {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    text-align: left;
+  }
+
+  .lista-contato li {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-weight: 600;
+  }
+
+  .lista-contato svg {
+    flex: none;
+    color: var(--verde-escuro);
+  }
+
+  @media (max-width: 48rem) {
+    .contato-grade {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

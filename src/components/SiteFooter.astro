@@ -1,0 +1,131 @@
+---
+import { NAV, SITE } from "../config/site";
+---
+
+<footer class="site-footer">
+  <div class="container footer-grade">
+    <div class="footer-marca">
+      <span class="marca-sigla" aria-hidden="true">
+        <span class="letra-p">P</span><span class="letra-s">S</span><span class="letra-e">E</span>
+      </span>
+      <div>
+        <strong>{SITE.municipio}</strong>
+        <p>{SITE.programa}</p>
+      </div>
+    </div>
+
+    <p class="footer-frase">
+      Prefeitura de Nova Santa Rita<br />
+      <span>{SITE.frasePrefeitura}</span>
+    </p>
+
+    <!-- [PLACEHOLDER] Quando o brasao oficial da Prefeitura estiver
+         disponivel, exibir aqui <img src={ASSETS.marca.brasaoPrefeitura}>. -->
+    <nav class="footer-nav" aria-label="Navegação do rodapé">
+      <ul>
+        {
+          NAV.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <p class="footer-nota">
+      {SITE.selo} · Projeto em desenvolvimento — esta página apresenta a
+      iniciativa e será atualizada com novidades.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    z-index: 40; /* rodape cobre o mascote no fim da pagina */
+    background: var(--tinta);
+    color: #e8f0ea;
+    padding-block: 2.8rem 2.2rem;
+  }
+
+  .footer-grade {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.4rem;
+    text-align: center;
+  }
+
+  .footer-marca {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .footer-marca > div {
+    text-align: left;
+    line-height: 1.25;
+  }
+
+  .footer-marca p {
+    font-size: 0.82rem;
+    color: #b9cec0;
+  }
+
+  .marca-sigla {
+    display: inline-flex;
+    align-items: baseline;
+    font-size: 1.9rem;
+    font-weight: 900;
+    line-height: 1;
+    background: rgb(255 255 255 / 0.08);
+    border-radius: 14px;
+    padding: 0.35rem 0.6rem;
+  }
+
+  .letra-p { color: #7fca8d; }
+  .letra-s { color: #7fb0e4; }
+  .letra-e { color: #f5b877; }
+
+  .footer-frase {
+    font-weight: 800;
+    font-size: 1.05rem;
+  }
+
+  .footer-frase span {
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: #b9cec0;
+  }
+
+  .footer-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.3rem 0.8rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .footer-nav a {
+    color: #d4e4d9;
+    font-size: 0.9rem;
+    text-decoration: none;
+    padding: 0.4rem 0.5rem;
+    border-radius: 8px;
+  }
+
+  .footer-nav a:hover {
+    color: #fff;
+    text-decoration: underline;
+  }
+
+  .footer-nota {
+    max-width: 40rem;
+    font-size: 0.8rem;
+    color: #9db8a5;
+    border-top: 1px solid rgb(255 255 255 / 0.14);
+    padding-top: 1.2rem;
+  }
+</style>

@@ -1,0 +1,147 @@
+---
+import { NAV, SITE } from "../config/site";
+---
+
+<header class="site-header">
+  <div class="container header-interno">
+    <a href="#topo" class="marca" aria-label={`${SITE.nome} — página inicial`}>
+      <!-- [PLACEHOLDER] Quando o logotipo oficial do PSE estiver disponivel,
+           substitua este bloco tipografico por <img> apontando para
+           ASSETS.marca.logoPseOficial (src/config/site.ts). -->
+      <span class="marca-sigla" aria-hidden="true">
+        <span class="letra-p">P</span><span class="letra-s">S</span><span class="letra-e">E</span>
+      </span>
+      <span class="marca-texto">
+        <strong>Nova Santa Rita</strong>
+        <small>Programa Saúde na Escola</small>
+      </span>
+    </a>
+
+    <nav aria-label="Navegação principal" class="nav-principal">
+      <ul>
+        {
+          NAV.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 60; /* acima da camada do mascote (30) */
+    min-height: var(--header-h);
+    display: flex;
+    align-items: center;
+    background: rgb(255 253 246 / 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--linha);
+  }
+
+  .header-interno {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 0.6rem;
+  }
+
+  .marca {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    text-decoration: none;
+    color: var(--tinta);
+  }
+
+  .marca-sigla {
+    display: inline-flex;
+    align-items: baseline;
+    font-size: 1.7rem;
+    font-weight: 900;
+    line-height: 1;
+    background: var(--nuvem);
+    border: 2px solid var(--linha);
+    border-radius: 14px;
+    padding: 0.3rem 0.55rem;
+    box-shadow: 0 3px 0 var(--linha);
+  }
+
+  .letra-p {
+    color: var(--verde);
+  }
+  .letra-s {
+    color: var(--azul);
+  }
+  .letra-e {
+    color: var(--laranja);
+  }
+
+  .marca-texto {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+
+  .marca-texto strong {
+    font-size: 0.98rem;
+    color: var(--verde-escuro);
+  }
+
+  .marca-texto small {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--tinta-suave);
+    letter-spacing: 0.02em;
+  }
+
+  .nav-principal ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .nav-principal a {
+    display: inline-block;
+    padding: 0.55rem 0.85rem;
+    border-radius: var(--raio-pilula);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: var(--tinta-suave);
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
+  }
+
+  .nav-principal a:hover {
+    background: var(--verde-claro);
+    color: var(--verde-escuro);
+  }
+
+  @media (max-width: 56rem) {
+    .site-header {
+      position: static;
+    }
+    .header-interno {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .nav-principal ul {
+      gap: 0;
+    }
+    .nav-principal a {
+      padding: 0.5rem 0.65rem;
+      font-size: 0.86rem;
+    }
+  }
+</style>

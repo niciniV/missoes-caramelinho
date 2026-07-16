@@ -1,0 +1,135 @@
+---
+import { MISSOES } from "../config/site";
+import Icon from "./Icon.astro";
+---
+
+<!--
+  Secao de missoes: os cards tem fundo opaco e z-index acima do mascote,
+  criando o "tunel" por onde ele passa por tras durante a rolagem.
+-->
+<section
+  class="secao missoes cobre-mascote"
+  id="missoes"
+  aria-labelledby="titulo-missoes"
+>
+  <div class="container">
+    <div class="cabecalho-secao centrado">
+      <span class="kicker azul"><Icon name="estrela" size={15} /> Nossas missões</span>
+      <h2 class="titulo-secao" id="titulo-missoes">
+        Sete missões para crescer saudável e feliz
+      </h2>
+      <p class="subtitulo-secao">
+        Cada missão é um convite para cuidar do corpo, das emoções e das
+        amizades — em casa, na escola e no caminho entre os dois.
+      </p>
+    </div>
+
+    <ul class="grade-missoes">
+      {
+        MISSOES.map((m) => (
+          <li class={`missao cor-${m.cor}`}>
+            <span class="missao-icone">
+              <Icon name={m.icone} size={30} />
+            </span>
+            <h3>{m.titulo}</h3>
+            <p>{m.texto}</p>
+          </li>
+        ))
+      }
+      <!-- Cartao extra: convite institucional -->
+      <li class="missao cor-extra">
+        <span class="missao-icone"><Icon name="patinha" size={28} /></span>
+        <h3>E muito mais</h3>
+        <p>Novos conteúdos e materiais estão sendo preparados com carinho.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .missoes {
+    background:
+      linear-gradient(180deg, var(--grama) 0%, #f6faef 100%);
+    border-block: 1px solid var(--linha);
+  }
+
+  .grade-missoes {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.1rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .missao {
+    background: var(--nuvem);
+    border: 1.5px solid var(--linha);
+    border-radius: var(--raio-m);
+    padding: 1.35rem 1.2rem;
+    box-shadow: var(--sombra-card);
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .missao:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--sombra-levantada);
+  }
+
+  .missao h3 {
+    font-size: 1.06rem;
+    margin-top: 0.85rem;
+  }
+
+  .missao p {
+    margin-top: 0.4rem;
+    font-size: 0.9rem;
+    color: var(--tinta-suave);
+  }
+
+  .missao-icone {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.3rem;
+    height: 3.3rem;
+    border-radius: 50%;
+  }
+
+  .cor-verde .missao-icone { background: var(--missao-verde-bg); color: var(--missao-verde-fg); }
+  .cor-azul .missao-icone { background: var(--missao-azul-bg); color: var(--missao-azul-fg); }
+  .cor-roxo .missao-icone { background: var(--missao-roxo-bg); color: var(--missao-roxo-fg); }
+  .cor-amarelo .missao-icone { background: var(--missao-amarelo-bg); color: var(--missao-amarelo-fg); }
+  .cor-coral .missao-icone { background: var(--missao-coral-bg); color: var(--missao-coral-fg); }
+  .cor-agua .missao-icone { background: var(--missao-agua-bg); color: var(--missao-agua-fg); }
+  .cor-laranja .missao-icone { background: var(--missao-laranja-bg); color: var(--missao-laranja-fg); }
+
+  .cor-extra {
+    border-style: dashed;
+    border-color: rgb(240 140 46 / 0.55);
+    background: var(--laranja-claro);
+  }
+  .cor-extra .missao-icone {
+    background: var(--nuvem);
+    color: var(--laranja-escuro);
+  }
+
+  @media (max-width: 60rem) {
+    .grade-missoes {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .grade-missoes {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .missao:hover {
+      transform: none;
+    }
+  }
+</style>

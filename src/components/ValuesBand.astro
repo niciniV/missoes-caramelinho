@@ -1,0 +1,53 @@
+---
+import { VALORES } from "../config/site";
+import Icon from "./Icon.astro";
+---
+
+<!-- Faixa de valores do material oficial: Cuidar, Respeitar, Aprender, Conviver, Crescer -->
+<div class="faixa-valores" role="region" aria-label="Valores do programa">
+  <ul>
+    {
+      VALORES.map((v) => (
+        <li>
+          <Icon name="patinha" size={16} />
+          <span>{v}</span>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .faixa-valores {
+    position: relative;
+    z-index: 40; /* passa na frente do mascote */
+    background: var(--verde);
+    color: #fff;
+    padding-block: 0.9rem;
+    overflow: clip;
+  }
+
+  .faixa-valores ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(1rem, 4vw, 3rem);
+    list-style: none;
+    padding: 0 1rem;
+    margin: 0;
+  }
+
+  .faixa-valores li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: clamp(0.8rem, 1.6vw, 1rem);
+  }
+
+  .faixa-valores svg {
+    opacity: 0.75;
+  }
+</style>

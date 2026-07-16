@@ -1,0 +1,147 @@
+---
+import { SITE } from "../config/site";
+import Icon from "./Icon.astro";
+---
+
+<section class="secao sobre" id="projeto" aria-labelledby="titulo-projeto">
+  <div class="container">
+    <div class="cabecalho-secao">
+      <span class="kicker"><Icon name="coracao" size={15} /> O projeto</span>
+      <h2 class="titulo-secao" id="titulo-projeto">
+        Educação e saúde de mãos dadas
+      </h2>
+      <p class="subtitulo-secao">
+        O {SITE.nome} é uma iniciativa municipal do {SITE.programa} que leva
+        cuidado, prevenção e bem-estar para o dia a dia das crianças —
+        dentro e fora da sala de aula.
+      </p>
+    </div>
+
+    <div class="pilares" role="list">
+      <article class="pilar" role="listitem">
+        <span class="pilar-icone verde"><Icon name="professores" size={30} /></span>
+        <h3>Escola</h3>
+        <p>
+          Conteúdos lúdicos e materiais de apoio para professores trabalharem
+          saúde, convivência e cidadania com a turma.
+        </p>
+      </article>
+      <article class="pilar" role="listitem">
+        <span class="pilar-icone laranja"><Icon name="familias" size={30} /></span>
+        <h3>Família</h3>
+        <p>
+          Orientações acessíveis para pais e responsáveis continuarem o
+          cuidado em casa, no ritmo de cada família.
+        </p>
+      </article>
+      <article class="pilar" role="listitem">
+        <span class="pilar-icone azul"><Icon name="ponte" size={30} /></span>
+        <h3>Saúde</h3>
+        <p>
+          Aproxima os profissionais de saúde do cotidiano escolar,
+          fortalecendo a prevenção desde a infância.
+        </p>
+      </article>
+    </div>
+
+    <div class="chamada-experiencia">
+      <div class="chamada-texto">
+        <span class="selo-dev"><Icon name="brilho" size={15} /> Em preparação</span>
+        <h3>Uma experiência educativa digital está sendo preparada</h3>
+        <p>
+          Para conversar com as crianças de 6 a 10 anos na linguagem delas, o
+          projeto está preparando uma experiência educativa digital sobre
+          saúde, convivência escolar, respeito à diversidade, inclusão,
+          cidadania, cultura de paz e prevenção de violências — tudo com o
+          Caramelinho como guia.
+        </p>
+        <a class="botao contorno" href="#experiencia">
+          Ver o que vem por aí
+          <Icon name="seta" size={18} />
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sobre {
+    background: var(--papel);
+  }
+
+  .pilares {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  .pilar {
+    background: var(--nuvem);
+    border: 1.5px solid var(--linha);
+    border-radius: var(--raio-l);
+    padding: 1.6rem 1.5rem;
+    box-shadow: var(--sombra-card);
+  }
+
+  .pilar h3 {
+    font-size: 1.25rem;
+    margin-top: 0.9rem;
+  }
+
+  .pilar p {
+    margin-top: 0.45rem;
+    color: var(--tinta-suave);
+    font-size: 0.97rem;
+  }
+
+  .pilar-icone {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.6rem;
+    height: 3.6rem;
+    border-radius: 1.2rem;
+  }
+  .pilar-icone.verde { background: var(--verde-claro); color: var(--verde-escuro); }
+  .pilar-icone.laranja { background: var(--laranja-claro); color: var(--laranja-escuro); }
+  .pilar-icone.azul { background: var(--azul-claro); color: var(--azul-escuro); }
+
+  .chamada-experiencia {
+    margin-top: 2.5rem;
+    border-radius: var(--raio-l);
+    background:
+      radial-gradient(circle at 12% 20%, rgb(247 201 72 / 0.25), transparent 45%),
+      linear-gradient(135deg, var(--verde) 0%, var(--agua) 100%);
+    color: #fff;
+    padding: clamp(1.8rem, 4vw, 3rem);
+    box-shadow: var(--sombra-levantada);
+  }
+
+  .chamada-texto {
+    max-width: 44rem;
+  }
+
+  .chamada-texto h3 {
+    font-size: clamp(1.35rem, 2.6vw, 1.8rem);
+    margin-top: 1rem;
+  }
+
+  .chamada-texto p {
+    margin-top: 0.7rem;
+    color: rgb(255 255 255 / 0.92);
+  }
+
+  .chamada-texto .botao {
+    margin-top: 1.4rem;
+  }
+
+  .chamada-experiencia .selo-dev {
+    background: rgb(255 255 255 / 0.92);
+  }
+
+  @media (max-width: 48rem) {
+    .pilares {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

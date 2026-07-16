@@ -1,0 +1,299 @@
+---
+import { ASSETS, FALA_CARAMELINHO, JUNTOS_POR, SITE } from "../config/site";
+import Icon from "./Icon.astro";
+---
+
+<section class="heroi" id="topo" aria-labelledby="titulo-heroi">
+  <!-- Cenario: ceu, nuvens e colina em CSS puro (sem imagens pesadas) -->
+  <div class="cenario" aria-hidden="true">
+    <div class="nuvem n1"></div>
+    <div class="nuvem n2"></div>
+    <div class="nuvem n3"></div>
+    <div class="colina c1"></div>
+    <div class="colina c2"></div>
+  </div>
+
+  <div class="container heroi-grade">
+    <div class="heroi-texto">
+      <span class="selo-dev">
+        <Icon name="brilho" size={15} />
+        Projeto em desenvolvimento
+      </span>
+
+      <h1 id="titulo-heroi">
+        <span class="titulo-programa">Programa Saúde na Escola</span>
+        <span class="titulo-slogan">{SITE.slogan}</span>
+      </h1>
+
+      <p class="heroi-descricao">{SITE.descricao}</p>
+
+      <ul class="heroi-selos" aria-label="Compromissos do projeto">
+        <li><Icon name="escudo" size={17} /> Sem anúncios</li>
+        <li><Icon name="cadeado" size={17} /> Dados protegidos</li>
+        <li><Icon name="maos" size={17} /> Mediação de adultos</li>
+      </ul>
+
+      <div class="heroi-acoes">
+        <a class="botao primario" href="#projeto">
+          Conhecer o projeto
+          <Icon name="seta" size={18} />
+        </a>
+        <a class="botao contorno" href="#missoes">Ver as missões</a>
+      </div>
+
+      <p class="juntos-por">
+        <strong>Juntos por:</strong>
+        {JUNTOS_POR.map((item, i) => (
+          <>
+            <span class={`jp jp-${i}`}>{item}</span>
+          </>
+        ))}
+      </p>
+    </div>
+
+    <figure class="heroi-mascote">
+      <figcaption class="balao" aria-hidden="true">{FALA_CARAMELINHO}</figcaption>
+      <img
+        src={ASSETS.mascot.classico}
+        alt="Caramelinho, o cachorrinho mascote do PSE Nova Santa Rita, acenando com mochila e escova de dentes"
+        width={ASSETS.mascot.width}
+        height={ASSETS.mascot.height}
+        fetchpriority="high"
+        decoding="async"
+      />
+    </figure>
+  </div>
+</section>
+
+<style>
+  .heroi {
+    position: relative;
+    overflow: clip;
+    background: linear-gradient(180deg, var(--ceu) 0%, #edf7fd 62%, var(--papel) 100%);
+    padding-block: clamp(2.5rem, 6vw, 5rem) clamp(4rem, 8vw, 6rem);
+  }
+
+  /* --- Cenario CSS --- */
+  .cenario {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .nuvem {
+    position: absolute;
+    background: rgb(255 255 255 / 0.85);
+    border-radius: var(--raio-pilula);
+    width: 9rem;
+    height: 2.6rem;
+  }
+  .nuvem::before,
+  .nuvem::after {
+    content: "";
+    position: absolute;
+    background: inherit;
+    border-radius: 50%;
+  }
+  .nuvem::before {
+    width: 3.4rem;
+    height: 3.4rem;
+    top: -1.7rem;
+    left: 1.4rem;
+  }
+  .nuvem::after {
+    width: 2.4rem;
+    height: 2.4rem;
+    top: -1.1rem;
+    right: 1.6rem;
+  }
+  .n1 { top: 9%; left: 6%; }
+  .n2 { top: 16%; right: 10%; transform: scale(1.25); }
+  .n3 { top: 42%; left: 38%; transform: scale(0.7); opacity: 0.7; }
+
+  .colina {
+    position: absolute;
+    border-radius: 50% 50% 0 0;
+  }
+  .c1 {
+    width: 90vw;
+    height: 14rem;
+    left: -20vw;
+    bottom: -9rem;
+    background: rgb(61 155 78 / 0.14);
+  }
+  .c2 {
+    width: 80vw;
+    height: 12rem;
+    right: -18vw;
+    bottom: -8rem;
+    background: rgb(46 111 183 / 0.1);
+  }
+
+  /* --- Conteudo --- */
+  .heroi-grade {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    align-items: center;
+    gap: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .titulo-programa {
+    display: block;
+    font-size: clamp(0.95rem, 1.8vw, 1.2rem);
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--azul-escuro);
+    margin-bottom: 0.4rem;
+  }
+
+  .titulo-slogan {
+    display: block;
+    font-size: clamp(2.1rem, 5.4vw, 3.6rem);
+    font-weight: 900;
+    color: var(--tinta);
+    max-width: 14ch;
+  }
+
+  .heroi-descricao {
+    margin-top: 1.1rem;
+    font-size: clamp(1.02rem, 1.7vw, 1.2rem);
+    color: var(--tinta-suave);
+    max-width: 34rem;
+  }
+
+  .heroi-selos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    list-style: none;
+    padding: 0;
+    margin-top: 1.4rem;
+  }
+
+  .heroi-selos li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: var(--nuvem);
+    border: 1.5px solid var(--linha);
+    color: var(--tinta);
+    font-size: 0.88rem;
+    font-weight: 700;
+    padding: 0.45rem 0.9rem;
+    border-radius: var(--raio-pilula);
+    box-shadow: 0 2px 0 var(--linha);
+  }
+
+  .heroi-selos svg {
+    color: var(--verde);
+    flex: none;
+  }
+
+  .heroi-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 1.8rem;
+  }
+
+  .juntos-por {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1.9rem;
+    font-size: 0.92rem;
+    color: var(--tinta-suave);
+  }
+
+  .jp {
+    font-weight: 800;
+    padding: 0.15rem 0.7rem;
+    border-radius: var(--raio-pilula);
+    font-size: 0.85rem;
+  }
+  .jp-0 { color: var(--verde-escuro); background: var(--verde-claro); }
+  .jp-1 { color: var(--azul-escuro); background: var(--azul-claro); }
+  .jp-2 { color: var(--laranja-escuro); background: var(--laranja-claro); }
+  .jp-3 { color: var(--roxo-escuro); background: var(--roxo-claro); }
+  .jp-4 { color: var(--agua-escuro); background: var(--agua-claro); }
+
+  /* --- Mascote --- */
+  .heroi-mascote {
+    position: relative;
+    justify-self: center;
+    max-width: min(21rem, 78%);
+    animation: boiar 5.5s ease-in-out infinite;
+  }
+
+  .heroi-mascote img {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 18px 24px rgb(35 64 46 / 0.22));
+  }
+
+  .balao {
+    position: absolute;
+    top: -0.5rem;
+    right: 88%;
+    width: max-content;
+    max-width: 15rem;
+    background: var(--nuvem);
+    border: 2px solid var(--verde);
+    border-radius: 18px 18px 4px 18px;
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.45;
+    color: var(--verde-escuro);
+    box-shadow: var(--sombra-card);
+  }
+  .balao::after {
+    content: "";
+    position: absolute;
+    right: -0.55rem;
+    bottom: 0.9rem;
+    width: 0.9rem;
+    height: 0.9rem;
+    background: var(--nuvem);
+    border-right: 2px solid var(--verde);
+    border-bottom: 2px solid var(--verde);
+    transform: rotate(-45deg);
+  }
+
+  @keyframes boiar {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-0.7rem); }
+  }
+
+  @media (max-width: 56rem) {
+    .heroi-grade {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+    .titulo-slogan,
+    .heroi-descricao {
+      margin-inline: auto;
+    }
+    .heroi-selos,
+    .heroi-acoes,
+    .juntos-por {
+      justify-content: center;
+    }
+    .heroi-mascote {
+      max-width: min(16rem, 64%);
+      margin-top: 0.5rem;
+    }
+    .balao {
+      display: none; /* balao fica pequeno demais no mobile; a fala segue no alt */
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .heroi-mascote {
+      animation: none;
+    }
+  }
+</style>

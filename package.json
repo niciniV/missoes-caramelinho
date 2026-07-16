@@ -1,0 +1,27 @@
+{
+  "name": "pse-nova-santa-rita-landing",
+  "version": "1.0.0",
+  "description": "Landing page institucional do PSE Nova Santa Rita — Programa Saúde na Escola",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@astrojs/solid-js": "^5.0.0",
+    "astro": "^5.0.0",
+    "solid-js": "^1.9.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "prettier": "^3.6.2",
+    "prettier-plugin-astro": "^0.14.1",
+    "typescript": "^5.6.0"
+  }
+}

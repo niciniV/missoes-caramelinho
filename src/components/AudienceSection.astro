@@ -1,0 +1,91 @@
+---
+import { PUBLICO } from "../config/site";
+import Icon from "./Icon.astro";
+---
+
+<section
+  class="secao para-quem cobre-mascote"
+  id="para-quem"
+  aria-labelledby="titulo-para-quem"
+>
+  <div class="container">
+    <div class="cabecalho-secao centrado">
+      <span class="kicker"><Icon name="respeito" size={15} /> Para quem</span>
+      <h2 class="titulo-secao" id="titulo-para-quem">
+        Feito para quem cuida das nossas crianças
+      </h2>
+      <p class="subtitulo-secao">
+        O projeto acompanha a criança em todos os lugares — e dá suporte a
+        todos os adultos que fazem parte dessa jornada.
+      </p>
+    </div>
+
+    <div class="grade-publico">
+      {
+        PUBLICO.map((p) => (
+          <article class={`cartao-publico cor-${p.cor}`}>
+            <span class="publico-icone">
+              <Icon name={p.icone} size={34} />
+            </span>
+            <h3>{p.titulo}</h3>
+            <p>{p.texto}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .para-quem {
+    background: linear-gradient(180deg, var(--azul-claro) 0%, #f2f7fd 100%);
+    border-block: 1px solid var(--linha);
+  }
+
+  .grade-publico {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  .cartao-publico {
+    background: var(--nuvem);
+    border: 1.5px solid var(--linha);
+    border-radius: var(--raio-l);
+    padding: 1.8rem 1.6rem;
+    text-align: center;
+    box-shadow: var(--sombra-card);
+  }
+
+  .cartao-publico h3 {
+    font-size: 1.3rem;
+    margin-top: 1rem;
+  }
+
+  .cartao-publico p {
+    margin-top: 0.5rem;
+    color: var(--tinta-suave);
+    font-size: 0.97rem;
+  }
+
+  .publico-icone {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 4.4rem;
+    height: 4.4rem;
+    border-radius: 1.5rem;
+  }
+
+  .cor-verde .publico-icone { background: var(--verde-claro); color: var(--verde-escuro); }
+  .cor-azul .publico-icone { background: var(--azul-claro); color: var(--azul-escuro); }
+  .cor-laranja .publico-icone { background: var(--laranja-claro); color: var(--laranja-escuro); }
+
+  @media (max-width: 48rem) {
+    .grade-publico {
+      grid-template-columns: 1fr;
+      max-width: 26rem;
+      margin-inline: auto;
+    }
+  }
+</style>

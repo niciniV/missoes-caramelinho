@@ -1,0 +1,37 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import HeroSection from "../components/HeroSection.astro";
+import AboutSection from "../components/AboutSection.astro";
+import MissionsSection from "../components/MissionsSection.astro";
+import ExperienceSection from "../components/ExperienceSection.astro";
+import AudienceSection from "../components/AudienceSection.astro";
+import SafetySection from "../components/SafetySection.astro";
+import IdentitySection from "../components/IdentitySection.astro";
+import ValuesBand from "../components/ValuesBand.astro";
+import ContactSection from "../components/ContactSection.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import MascotGuide from "../components/solid/MascotGuide";
+---
+
+<BaseLayout>
+  <SiteHeader />
+
+  <main id="conteudo">
+    <HeroSection />
+    <AboutSection />
+    <MissionsSection />
+    <ExperienceSection />
+    <AudienceSection />
+    <SafetySection />
+    <IdentitySection />
+    <ValuesBand />
+    <ContactSection />
+  </main>
+
+  <SiteFooter />
+
+  <!-- Ilha interativa: o Caramelinho acompanha a rolagem.
+       Hidrata somente no idle; sem JS a pagina permanece completa. -->
+  <MascotGuide client:idle />
+</BaseLayout>

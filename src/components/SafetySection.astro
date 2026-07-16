@@ -1,0 +1,93 @@
+---
+import { SEGURANCA } from "../config/site";
+import Icon from "./Icon.astro";
+---
+
+<section
+  class="secao seguranca"
+  id="seguranca"
+  aria-labelledby="titulo-seguranca"
+>
+  <div class="container">
+    <div class="cabecalho-secao">
+      <span class="kicker"><Icon name="escudo" size={15} /> Segurança e cuidado</span>
+      <h2 class="titulo-secao" id="titulo-seguranca">
+        Um ambiente pensado para proteger
+      </h2>
+      <p class="subtitulo-secao">
+        Por ser um projeto público feito para crianças, cada detalhe está
+        sendo planejado com responsabilidade, transparência e carinho.
+      </p>
+    </div>
+
+    <ul class="grade-seguranca">
+      {
+        SEGURANCA.map((s) => (
+          <li class="item-seguranca">
+            <span class="seg-icone">
+              <Icon name={s.icone} size={26} />
+            </span>
+            <div>
+              <h3>{s.titulo}</h3>
+              <p>{s.texto}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .seguranca {
+    background: var(--papel);
+  }
+
+  .grade-seguranca {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.1rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .item-seguranca {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    background: var(--nuvem);
+    border: 1.5px solid var(--linha);
+    border-left: 6px solid var(--verde);
+    border-radius: var(--raio-m);
+    padding: 1.3rem 1.4rem;
+    box-shadow: var(--sombra-card);
+  }
+
+  .seg-icone {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.1rem;
+    height: 3.1rem;
+    border-radius: 50%;
+    background: var(--verde-claro);
+    color: var(--verde-escuro);
+  }
+
+  .item-seguranca h3 {
+    font-size: 1.08rem;
+  }
+
+  .item-seguranca p {
+    margin-top: 0.3rem;
+    font-size: 0.92rem;
+    color: var(--tinta-suave);
+  }
+
+  @media (max-width: 48rem) {
+    .grade-seguranca {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

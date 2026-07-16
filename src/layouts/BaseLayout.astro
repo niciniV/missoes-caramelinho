@@ -1,0 +1,51 @@
+---
+import { ASSETS, SITE } from "../config/site";
+
+interface Props {
+  titulo?: string;
+  descricao?: string;
+}
+
+const { titulo = SITE.nome, descricao = SITE.descricao } = Astro.props;
+const tituloCompleto = `${titulo} · ${SITE.programa}`;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{tituloCompleto}</title>
+    <meta name="description" content={descricao} />
+    <meta name="theme-color" content="#3d9b4e" />
+    <meta
+      name="keywords"
+      content="PSE, Programa Saúde na Escola, Nova Santa Rita, saúde infantil, educação, Caramelinho"
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={tituloCompleto} />
+    <meta property="og:description" content={descricao} />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:image" content={ASSETS.mascot.classico} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <!-- Preload apenas do sprite inicial; os demais carregam progressivamente -->
+    <link
+      rel="preload"
+      as="image"
+      href={ASSETS.mascot.classico}
+      type="image/webp"
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  @import "../styles/global.css";
+</style>

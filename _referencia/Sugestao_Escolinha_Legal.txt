@@ -1,0 +1,116 @@
+SUGESTÃO DE JOGO EDUCATIVO DIGITAL
+“Escolinha Legal” — Jogo de tabuleiro 2D para educação em convivência, respeito à diversidade e prevenção de violências
+
+
+1. Apresentação da sugestão do jogo
+
+Esta é uma sugestão para um jogo educativo digital, provisoriamente intitulado “Escolinha Legal”, voltado a crianças em fase de alfabetização e dos primeiros anos do Ensino Fundamental. A proposta nasce da necessidade de trabalhar, de forma lúdica e segura, temas de convivência escolar, respeito ao colega, valorização da diversidade e prevenção de violências no ambiente escolar e no trajeto casa–escola.
+O formato escolhido — um jogo de tabuleiro digital em duas dimensões — foi definido após análise de viabilidade técnica, onde se considera que um jogo mais complexo teria uma janela de tempo superior ao que se espera (levando em conta todo o processo de desenvolvimento). Trata-se de um formato que une valor educativo, potencial de engajamento e um escopo de produção realista, adequado a um projeto que precisa ser desenvolvido com qualidade, mas sem a complexidade e o custo de um jogo de ação completo.
+
+2. Objetivos pedagógicos
+
+O jogo tem como propósito central oferecer às crianças, em um ambiente seguro e mediado por adultos, oportunidades de reconhecer situações do cotidiano, refletir sobre atitudes e compreender as consequências de seus comportamentos na convivência com os outros. Entre os objetivos específicos, destacam-se:
+Estimular o respeito mútuo entre colegas e o convívio harmonioso em diferentes espaços.
+Promover o olhar para a diversidade, representando crianças com características variadas e situações de inclusão.
+Desenvolver habilidades socioemocionais, como empatia, autocontrole e responsabilidade.
+Apresentar, de maneira adequada à faixa etária, noções de segurança e de prevenção de violências.
+Reforçar a importância de recorrer a um adulto de confiança diante de situações difíceis.
+Recomenda-se que a estrutura dos conteúdos seja alinhada às competências socioemocionais previstas na Base Nacional Comum Curricular (BNCC), o que fortalece a fundamentação pedagógica do material e facilita sua adoção pela rede de ensino.
+
+3. Público-alvo e contexto de uso
+
+O jogo destina-se a crianças de 6 a 10 anos. O uso é previsto para a sala de aula ou em casa, de forma controlada e supervisionada por professores ou outros adultos responsáveis. A mediação adulta não é apenas um requisito de segurança: ela é parte integrante da proposta pedagógica, criando momentos de conversa e reflexão a partir das situações vivenciadas no jogo.
+Por ser um jogo web (executado no navegador), poderá ser acessado em diferentes dispositivos — computadores, tablets e lousas digitais — sem necessidade de instalação, o que facilita seu uso nas escolas da rede.
+
+4. Visão geral do jogo
+
+“Escolinha Legal” é um jogo de tabuleiro digital que pode ser jogado individualmente ou por dois ou mais participantes. Ao iniciar a partida, cada jogador recebe um personagem por sorteio (conforme descrito na Seção 5) e percorre um caminho que representa um dia na vida escolar, desde a saída de casa pela manhã até o retorno ao lar no fim do dia. Ao longo do percurso, os jogadores encontram situações que exigem atitudes adequadas de convivência e respeito; acertos são recompensados e atitudes inadequadas geram reprimendas proporcionais à sua gravidade. Vence quem completar o percurso, mas o foco está no aprendizado construído ao longo do caminho.
+O jogo foi pensado para oferecer, idealmente, modalidades de uso complementares, de modo a atender a diferentes situações. Na modalidade em grupo, os participantes jogam revezando-se em turnos em um mesmo dispositivo compartilhado — o do professor, o da família ou poucos tablets divididos entre grupos. Além de dispensar que cada criança tenha o próprio aparelho, essa modalidade tem forte valor pedagógico: estimula a cooperação, o compartilhamento e a inclusão de quem não possui dispositivo, e favorece a interação presencial e a mediação do adulto. Por isso, é a forma recomendada para o uso em sala de aula.
+Na modalidade individual, a criança joga sozinha em seu próprio dispositivo, enfrentando colegas controlados pelo computador. É a opção mais indicada para o uso em casa e para situações em que a criança esteja sozinha com um aparelho. Já a modalidade multiplayer em rede permitiria que vários participantes, cada um em seu celular, disputassem uma mesma partida sincronizada — a experiência mais rica em termos de participação individual, porém a mais exigente do ponto de vista técnico.
+A viabilidade dessas modalidades depende diretamente da infraestrutura disponível. As modalidades em grupo e individual funcionam de maneira local, sem servidores dedicados nem conexão permanente, o que as torna viáveis desde já, mesmo em escolas com poucos equipamentos ou internet limitada. A modalidade multiplayer em rede, por sua vez, exige um servidor, conexão estável em todos os aparelhos e maior complexidade de desenvolvimento e manutenção. Como o município ainda avalia a questão dos servidores, recomenda-se desenvolver primeiro as modalidades locais, que já cobrem a maior parte das necessidades, e incorporar o multiplayer em rede em uma fase posterior, caso haja servidor e orçamento disponíveis — alcançando, assim, o ideal de atender a todas as situações de forma gradual e responsável.
+
+5. Os personagens
+
+Antes de iniciar, cada participante sorteia seu personagem em uma tela de seleção. O elenco é propositadamente diverso, refletindo a pluralidade real das salas de aula e reforçando, desde o primeiro contato, a mensagem de inclusão. Estão previstos:
+Personagens meninos e meninas.
+Diferentes tons de pele e traços variados.
+Uma criança cadeirante, representando a inclusão de pessoas com deficiência.
+Demais características que valorizem a diversidade do grupo.
+Do ponto de vista de produção, os personagens funcionam como peças (avatares) que se deslocam pelo tabuleiro. Por não exigirem animações complexas de caminhada ou corrida, é possível oferecer um elenco variado com custo reduzido de arte, mantendo a qualidade visual e a riqueza de representação.
+
+6. O percurso
+
+O caminho é organizado em trechos que reproduzem a sequência de um dia escolar. Cada casa do tabuleiro pode trazer uma situação, uma decisão ou um evento. A divisão em trechos facilita tanto a produção (ilustração por cenário) quanto o ritmo do jogo. Os trechos sugeridos são:
+
+6.1. A saída de casa
+O percurso inicia na casa do personagem, com situações ligadas à organização da rotina matinal e à despedida respeitosa da família, preparando a criança para o dia.
+
+6.2. O ônibus escolar
+No trecho do transporte, o foco está nas normas de convivência dentro do ônibus: aguardar a vez, permanecer sentado, respeitar o motorista e os colegas, e zelar pela própria segurança durante o trajeto.
+
+6.3. A travessia da rua
+Ao chegar às proximidades da escola, surge a situação de atravessar a rua com segurança, observando sinais, faixas e a orientação de adultos. É um momento que une educação para o trânsito e autocuidado.
+
+6.4. A chegada à escola e as situações internas
+Dentro da escola, concentra-se a maior parte das situações de convivência: o respeito aos colegas e aos profissionais, o cuidado com os espaços e materiais, a cooperação em sala, a inclusão de todos nas atividades e a postura diante de conflitos. É o coração pedagógico do jogo.
+
+6.5. O intervalo
+No recreio, o jogo aborda a partilha, as brincadeiras coletivas, o respeito às diferenças e a resolução pacífica de pequenos desentendimentos, situações típicas desse momento de maior liberdade.
+
+6.6. O término da aula e o retorno para casa
+Ao final do dia, o percurso se encerra com o retorno para casa, fechando o ciclo de forma positiva e reforçando os aprendizados construídos ao longo do trajeto.
+
+7. A mecânica de movimentação
+
+O avanço pelo tabuleiro é determinado por uma roleta com seta giratória e números. Na sua vez, o jogador aciona a roleta; quando a seta para, o número indicado define quantas casas o personagem avança. O mesmo recurso é utilizado para resolver determinadas reprimendas, conferindo a elas um caráter de jogo e mantendo a coesão da mecânica.
+A roleta é, ao mesmo tempo, simples de produzir e altamente envolvente para a faixa etária, pois agrega o elemento de expectativa e sorte, que é um forte motor de engajamento entre as crianças.
+
+8. Bônus e reprimendas
+
+O sistema de recompensas e consequências é o que dá ao jogo sua dimensão formativa. Ele traduz, em mecânica de jogo, a ideia de que atitudes têm efeitos — sempre com tom positivo e acolhedor, jamais punitivo ou constrangedor.
+
+8.1. Bônus
+Casas de bônus premiam boas escolhas e a atenção da criança. Ao alcançá-las, o jogo oferece retorno positivo por meio de animação de comemoração, efeitos sonoros alegres e estrelinhas que se acendem na tela, acompanhados de uma narração de parabéns. Esse reforço positivo valoriza o comportamento adequado e estimula a criança a prosseguir.
+
+8.2. Reprimendas proporcionais à gravidade
+Quando o personagem se depara com uma atitude inadequada, a consequência é proporcional à gravidade da situação, em três níveis:
+Falta leve: o personagem retorna uma casa, acompanhado de um retorno sonoro suave e de uma carinha triste, sinalizando que algo poderia ter sido diferente.
+Falta moderada: o personagem é encaminhado à coordenação para conversar com o coordenador, em um momento apresentado como reflexão e aprendizado — nunca como castigo ou humilhação.
+Falta gravíssima: o personagem só é liberado para seguir após “falar com o responsável” (o adulto que supervisiona a atividade), trazendo o adulto para dentro da dinâmica e gerando uma conversa real sobre a situação.
+A representação das falhas deve ser sempre delicada. A carinha triste e os sinais sonoros têm a função de indicar o engano e convidar à reflexão, sem expor ou ridicularizar a criança. Recomenda-se fortemente que a redação dessas situações e a abordagem das reprimendas sejam revisadas por pedagogos e psicólogos infantis, garantindo que o tom seja construtivo e adequado à faixa etária.
+
+9. Gameficação e engajamento
+
+A própria estrutura de tabuleiro já incorpora elementos de gameficação: progresso visível ao longo do percurso, recompensas, consequências e a meta de concluir o caminho. A esses elementos somam-se recursos que ampliam o envolvimento das crianças, como animações de reação dos personagens, efeitos sonoros, narração em áudio e elementos clicáveis escondidos nos cenários, que podem render pontos extras e estimular a observação atenta.
+Esses recursos garantem que o jogo seja dinâmico e atraente, e não uma experiência estática, preservando ao mesmo tempo a simplicidade de produção que torna o projeto viável.
+
+10. Diretrizes de bem-estar, segurança e adequação infantil
+
+Por se tratar de um produto destinado a crianças e de uso institucional, as diretrizes a seguir são parte essencial da qualidade do jogo:
+Conteúdo revisado por especialistas: roteiros, situações e abordagens validados por pedagogos e psicólogos infantis, sobretudo nos temas mais sensíveis.
+Tom positivo e empoderador: o foco está em reconhecer emoções, fazer boas escolhas e saber a quem recorrer, sem representações gráficas de violência e sem qualquer caráter amedrontador.
+Acessibilidade: narração em áudio para crianças que ainda não leem com fluência, botões grandes, navegação simples e poucas opções por tela.
+Ambiente fechado e seguro: sem anúncios, sem links externos abertos e sem qualquer canal que retire a criança do jogo; uso sempre supervisionado.
+Proteção de dados: não coletar dados pessoais das crianças. Os participantes são identificados apenas por apelido e avatar. Eventuais cadastros e autorizações ficam restritos ao adulto responsável, em conformidade com a Lei Geral de Proteção de Dados (LGPD), que dá tratamento específico aos dados de crianças e exige o consentimento de pelo menos um dos pais ou responsável.
+
+11. Aspectos técnicos de produção
+
+Para o desenvolvimento, recomenda-se uma ferramenta de criação de jogos sem necessidade de programação avançada e com exportação nativa para a web, capaz de atender a todos os requisitos descritos — tabuleiro, movimentação das peças, roleta, controle de turnos, lógica de bônus e reprimendas, reprodução de áudio e exibição de vídeo. Ferramentas gratuitas e de código aberto com publicação web facilitada atendem bem a esse perfil.
+O formato de tabuleiro com participantes em turnos no mesmo dispositivo dispensa servidor dedicado para a partida, reduzindo custo e complexidade de infraestrutura. Como o jogo é web, sua distribuição pode ser feita por um simples endereço de acesso, compatível com os equipamentos das escolas.
+É importante registrar, com transparência, que mesmo um jogo neste formato demanda trabalho real de roteiro, ilustração, sonorização e testes com crianças. Sugere-se um desenvolvimento incremental, por trechos do percurso (módulos), permitindo validar cada etapa com o público antes de avançar, em vez de tentar concluir todo o jogo de uma só vez.
+
+12. Recurso de vídeo (funcionalidade complementar)
+
+Como aprimoramento futuro — um “plus” a ser considerado em uma segunda fase —, casas especiais poderão exibir vídeos de orientação, com mensagens de parabéns ou conteúdos educativos relacionados às situações do jogo. A proposta não é produzir vídeos do zero, mas aproveitar materiais já existentes e confiáveis.
+Para preservar a segurança das crianças, os vídeos devem ser apresentados em modo incorporado (embed), ou seja, exibidos dentro do próprio jogo, em uma janela sobre o tabuleiro, sem direcionar a criança para fora do ambiente. Deve-se evitar abrir plataformas de vídeo externas diretamente, pois isso exporia os usuários a anúncios, recomendações e conteúdos não controlados. Sempre que possível, recomenda-se o uso de recursos de privacidade na incorporação.
+Os vídeos devem ser cuidadosamente curados a partir de fontes oficiais e confiáveis, com a devida verificação de permissão e direitos de uso, requisito especialmente relevante em um produto público. Uma alternativa ainda mais segura é hospedar os próprios arquivos de vídeo, garantindo um ambiente totalmente fechado, sem anúncios e com melhor desempenho em conexões de internet limitadas.
+
+13. Considerações finais
+
+O “Escolinha Legal” reúne um conjunto de qualidades que o tornam uma proposta sólida, como: aderência aos objetivos de educação para a convivência e prevenção de violências, valorização da diversidade, integração do adulto à dinâmica, gameficação naturalmente incorporada e, sobretudo, um escopo de produção realista. O formato de tabuleiro permite entregar um jogo de qualidade, envolvente e seguro, dentro de prazos e recursos compatíveis com a realidade de um projeto educacional.
+Por fim, o mais importante, o alinhamento dos conteúdos com a equipe pedagógica, que sinalizará a qualidade efetiva da pedagogia a ser aplicada.
+
+Referências Bibliográficas
+
+[1] Lei nº 15100, de 13 de Janeiro de 2025
+[2] Ministério da Educação Base Nacional Comum Curricular

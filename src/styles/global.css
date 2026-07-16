@@ -1,0 +1,368 @@
+/* ============================================================
+   PSE Nova Santa Rita — estilos globais e design tokens
+   Paleta inspirada no material oficial do Programa Saúde na Escola.
+   ============================================================ */
+
+:root {
+  /* Cores principais da identidade */
+  --verde: #3d9b4e;
+  --verde-escuro: #26713a;
+  --verde-claro: #e8f5e9;
+  --azul: #2e6fb7;
+  --azul-escuro: #1d4f8a;
+  --azul-claro: #e7f0fa;
+  --amarelo: #f7c948;
+  --amarelo-escuro: #b8860b;
+  --amarelo-claro: #fdf3d7;
+  --laranja: #f08c2e;
+  --laranja-escuro: #c96a10;
+  --laranja-claro: #fdeede;
+  --roxo: #8a63b8;
+  --roxo-escuro: #6a4794;
+  --roxo-claro: #f1eaf9;
+  --coral: #e05b4b;
+  --coral-escuro: #b23a2c;
+  --coral-claro: #fbe9e6;
+  --agua: #2ba8a0;
+  --agua-escuro: #1c7c76;
+  --agua-claro: #e2f4f3;
+
+  /* Neutros */
+  --tinta: #23402e; /* texto principal: verde-floresta escuro */
+  --tinta-suave: #4c6656;
+  --papel: #fffdf6; /* fundo quente, como o material oficial */
+  --nuvem: #ffffff;
+  --ceu: #d9eff9;
+  --grama: #eef7e4;
+  --linha: #dce8d8;
+
+  /* Cores de missao (fundo suave / destaque / texto) */
+  --missao-verde-bg: var(--verde-claro);
+  --missao-verde-fg: var(--verde-escuro);
+  --missao-azul-bg: var(--azul-claro);
+  --missao-azul-fg: var(--azul-escuro);
+  --missao-roxo-bg: var(--roxo-claro);
+  --missao-roxo-fg: var(--roxo-escuro);
+  --missao-amarelo-bg: var(--amarelo-claro);
+  --missao-amarelo-fg: #7a5c05;
+  --missao-coral-bg: var(--coral-claro);
+  --missao-coral-fg: var(--coral-escuro);
+  --missao-agua-bg: var(--agua-claro);
+  --missao-agua-fg: var(--agua-escuro);
+  --missao-laranja-bg: var(--laranja-claro);
+  --missao-laranja-fg: var(--laranja-escuro);
+
+  /* Tipografia — pilha do sistema, sem fontes externas */
+  --fonte:
+    "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+
+  /* Raios e sombras */
+  --raio-s: 12px;
+  --raio-m: 20px;
+  --raio-l: 28px;
+  --raio-pilula: 999px;
+  --sombra-card: 0 6px 24px rgb(35 64 46 / 0.1);
+  --sombra-levantada: 0 14px 40px rgb(35 64 46 / 0.16);
+
+  /* Ritmo */
+  --container: 72rem;
+  --header-h: 4.5rem;
+}
+
+/* ------------------------------------------------------------ */
+/* Reset suave                                                   */
+/* ------------------------------------------------------------ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + 1rem);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--fonte);
+  color: var(--tinta);
+  background-color: var(--papel);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+img {
+  /* Evita "flash" sem estilo enquanto o webp carrega */
+  background: transparent;
+}
+
+a {
+  color: var(--azul-escuro);
+  text-underline-offset: 0.18em;
+}
+
+button,
+a {
+  touch-action: manipulation;
+}
+
+/* Foco visivel em todo elemento interativo */
+:focus-visible {
+  outline: 3px solid var(--azul);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Link "pular para o conteudo" */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 200;
+  background: var(--tinta);
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--raio-pilula);
+  text-decoration: none;
+  font-weight: 700;
+  transition: top 0.2s ease;
+}
+.skip-link:focus-visible {
+  top: 1rem;
+}
+
+/* ------------------------------------------------------------ */
+/* Utilitarios                                                   */
+/* ------------------------------------------------------------ */
+
+.container {
+  width: min(100% - 2.5rem, var(--container));
+  margin-inline: auto;
+}
+
+.secao {
+  padding-block: clamp(3.5rem, 8vw, 6rem);
+  position: relative;
+}
+
+/*
+ * Secoes que passam NA FRENTE do mascote durante as "tuneis":
+ * precisam de fundo opaco e z-index acima da camada do mascote (30).
+ */
+.cobre-mascote {
+  position: relative;
+  z-index: 40;
+}
+
+.cabecalho-secao {
+  max-width: 46rem;
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+
+.cabecalho-secao.centrado {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--verde-escuro);
+  background: var(--verde-claro);
+  border: 1px solid rgb(61 155 78 / 0.35);
+  padding: 0.35rem 0.9rem;
+  border-radius: var(--raio-pilula);
+  margin-bottom: 1rem;
+}
+
+.kicker.azul {
+  color: var(--azul-escuro);
+  background: var(--azul-claro);
+  border-color: rgb(46 111 183 / 0.35);
+}
+
+.kicker.laranja {
+  color: var(--laranja-escuro);
+  background: var(--laranja-claro);
+  border-color: rgb(240 140 46 / 0.4);
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.titulo-secao {
+  font-size: clamp(1.7rem, 3.6vw, 2.5rem);
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.subtitulo-secao {
+  margin-top: 0.9rem;
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+  color: var(--tinta-suave);
+}
+
+/* Selo "em desenvolvimento" */
+.selo-dev {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--amarelo-escuro);
+  background: var(--amarelo-claro);
+  border: 1.5px dashed var(--amarelo);
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--raio-pilula);
+}
+
+/* ------------------------------------------------------------ */
+/* Botoes                                                        */
+/* ------------------------------------------------------------ */
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 3rem;
+  padding: 0.8rem 1.6rem;
+  border-radius: var(--raio-pilula);
+  font-weight: 800;
+  font-size: 1rem;
+  text-decoration: none;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.botao.primario {
+  background: var(--verde);
+  color: #fff;
+  box-shadow: 0 6px 0 var(--verde-escuro);
+}
+
+.botao.primario:hover {
+  background: var(--verde-escuro);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 0 rgb(38 113 58 / 0.85);
+}
+
+.botao.primario:active {
+  transform: translateY(2px);
+  box-shadow: 0 3px 0 var(--verde-escuro);
+}
+
+.botao.contorno {
+  background: var(--nuvem);
+  color: var(--azul-escuro);
+  border-color: var(--azul);
+  box-shadow: 0 6px 0 rgb(46 111 183 / 0.25);
+}
+
+.botao.contorno:hover {
+  background: var(--azul-claro);
+  transform: translateY(-2px);
+}
+
+.botao.contorno:active {
+  transform: translateY(2px);
+  box-shadow: 0 3px 0 rgb(46 111 183 / 0.25);
+}
+
+/* ------------------------------------------------------------ */
+/* Camada do mascote (controlada pelo MascotGuide em SolidJS)    */
+/* ------------------------------------------------------------ */
+
+#mascote-guia {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 30;
+  width: var(--tam, 11.875rem);
+  height: var(--tam, 11.875rem);
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
+  contain: layout style;
+  transition: opacity 0.35s ease;
+}
+
+#mascote-guia[hidden] {
+  display: none;
+}
+
+#mascote-guia .mascote-flip,
+#mascote-guia .mascote-salto {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+#mascote-guia .mascote-salto {
+  will-change: transform;
+}
+
+#mascote-guia img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  /* Sombras estaticas sao baratas; nenhum filtro animado por rolagem */
+  filter: drop-shadow(0 10px 14px rgb(35 64 46 / 0.25));
+}
+
+#mascote-guia img.ativa {
+  opacity: 1;
+}
+
+/* ------------------------------------------------------------ */
+/* Movimento reduzido                                            */
+/* ------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
