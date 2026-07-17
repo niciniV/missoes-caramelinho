@@ -1,316 +1,775 @@
 import { onCleanup, onMount } from "solid-js";
 import { ASSETS } from "../../config/site";
+import {
+  chooseOcclusionStrategy,
+  clamp,
+  cubicBezierPoint,
+  dualHandoff,
+  gentleEase,
+  isFullyOccluded,
+  paperFrame,
+  sampleScene,
+  selectScene,
+  stagingCurve,
+  smoothstep,
+  transitionScrollWindow,
+} from "./mascot-route.js";
 
-/**
- * MascotGuide — o Caramelinho acompanha a rolagem da pagina.
- *
- * Coreografia (ancorada nas secoes reais do documento):
- *  1. Atravessa a base da secao "O projeto" (esq. -> dir.), saltitando.
- *  2. Some por tras da grade de Missoes (tunel: troca de pose oculta).
- *  3. Reaparece em "A experiencia" na cena do papel (quadros A/B
- *     alternados APENAS enquanto essa cena esta ativa).
- *  4. Atravessa "A experiencia" (esq. -> dir.).
- *  5. Some por tras de "Para quem" (segundo tunel).
- *  6. Atravessa "Seguranca" (esq. -> dir.).
- *  7. Some por tras de "Identidade" e reaparece descansando no "Contato".
- *
- * Tudo usa transform/opacity, listener de rolagem passivo e um loop rAF
- * suavizado. Com prefers-reduced-motion, sem ancoras ou sem JS, o guia
- * nao aparece — e a pagina continua completa sem ele.
- */
+type Pose = "classico" | "movimento" | "papel-a" | "papel-b";
+type Side = "left" | "right";
 
-type Pose = "classico" | "movimento" | "papel";
-
-interface Marco {
-  /** progresso de rolagem (0..1) */
-  p: number;
-  /** posicao horizontal do centro do sprite, em % da viewport */
+interface Point {
   x: number;
-  /** distancia da base da viewport, em px */
-  lane: number;
-  /** visibilidade ao CHEGAR neste marco (define as pernas "tunel") */
-  visivel: boolean;
-  /** pose ao terminar parado neste marco */
-  poseParado: Pose;
+  y: number;
 }
 
-const DURACAO_PAPEL_MS = 650;
-
-function limite(v: number, min: number, max: number): number {
-  return Math.min(max, Math.max(min, v));
+interface Curve {
+  p0: Point;
+  p1: Point;
+  p2: Point;
+  p3: Point;
 }
 
-/** Progresso de rolagem em que uma secao entra/sai da area util da viewport. */
-function medirSecao(id: string): { ini: number; fim: number } | null {
-  const el = document.getElementById(id);
-  if (!el) return null;
-  const max = document.documentElement.scrollHeight - window.innerHeight;
-  if (max <= 0) return null;
-  const topo = el.getBoundingClientRect().top + window.scrollY;
+interface DocumentRect {
+  left: number;
+  right: number;
+  top: number;
+  bottom: number;
+  width: number;
+  height: number;
+}
+
+interface BaseScene {
+  id: string;
+  start: number;
+  end: number;
+  curve: Curve;
+  scaleStart: number;
+  scaleEnd: number;
+}
+
+interface TravelScene extends BaseScene {
+  kind: "travel";
+  pose: Pose | "papel";
+}
+
+interface TransitionScene extends BaseScene {
+  kind: "transition";
+  fromPose: Pose;
+  toPose: Pose;
+  strategy: "simple" | "dual";
+  outgoingCurve: Curve;
+  incomingCurve: Curve;
+  curtain: DocumentRect;
+}
+
+type Scene = TravelScene | TransitionScene;
+
+interface ActorState {
+  x: number;
+  y: number;
+  scale: number;
+  pose: Pose;
+  visible: boolean;
+  direction: 1 | -1;
+}
+
+interface ActorRefs {
+  element?: HTMLDivElement;
+  bounce?: HTMLDivElement;
+  flip?: HTMLDivElement;
+  images: Partial<Record<Pose, HTMLImageElement>>;
+}
+
+const MOBILE_QUERY = "(max-width: 45rem)";
+const TABLET_QUERY = "(max-width: 64rem)";
+const OVERLAP_START = 0.25;
+const OVERLAP_END = 0.85;
+
+function documentRect(element: Element): DocumentRect {
+  const rect = element.getBoundingClientRect();
+  const top = rect.top + window.scrollY;
   return {
-    ini: limite((topo - window.innerHeight * 0.55) / max, 0, 1),
-    fim: limite((topo + el.offsetHeight - window.innerHeight * 0.45) / max, 0, 1),
+    left: rect.left,
+    right: rect.right,
+    top,
+    bottom: top + rect.height,
+    width: rect.width,
+    height: rect.height,
   };
 }
 
-function construirRota(mobile: boolean): Marco[] | null {
-  const sobre = medirSecao("projeto");
-  const missoes = medirSecao("missoes");
-  const experiencia = medirSecao("experiencia");
-  const paraQuem = medirSecao("para-quem");
-  const seguranca = medirSecao("seguranca");
-  const identidade = medirSecao("identidade");
-  const contato = medirSecao("contato");
+function curveBetween(start: Point, end: Point, arc: number): Curve {
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+  return {
+    p0: start,
+    p1: {
+      x: start.x + dx * 0.28,
+      y: start.y + dy * 0.18 - arc,
+    },
+    p2: {
+      x: start.x + dx * 0.72,
+      y: start.y + dy * 0.82 + arc * 0.55,
+    },
+    p3: end,
+  };
+}
+
+function transitionWindow(rect: DocumentRect, viewportHeight: number, maxScroll: number) {
+  const center = rect.top + rect.height * 0.52;
+  return transitionScrollWindow(center, viewportHeight, maxScroll);
+}
+
+function cardCenterAt(rect: DocumentRect, scrollY: number, size: number): number {
+  return rect.top - scrollY + rect.height * 0.52 - size / 2;
+}
+
+function transitionPoints(
+  rect: DocumentRect,
+  start: number,
+  end: number,
+  size: number,
+  entry: Side,
+) {
+  const gap = Math.max(10, size * 0.08);
+  const startY = cardCenterAt(rect, start, size);
+  const endY = cardCenterAt(rect, end, size);
+  const midScroll = (start + end) / 2;
+  const hidden: Point = {
+    x: rect.left + rect.width / 2 - size / 2,
+    y: cardCenterAt(rect, midScroll, size),
+  };
+
+  const approach: Point = {
+    x: entry === "left" ? rect.left - size - gap : rect.right + gap,
+    y: startY,
+  };
+  const exit: Point = {
+    x: entry === "left" ? rect.right + gap : rect.left - size - gap,
+    y: endY,
+  };
+
+  const crossCurve: Curve = {
+    p0: approach,
+    p1: {
+      x: entry === "left" ? rect.left + size * 0.25 : rect.right - size * 1.25,
+      y: startY - size * 0.14,
+    },
+    p2: {
+      x: entry === "left" ? rect.right - size * 1.25 : rect.left + size * 0.25,
+      y: endY + size * 0.12,
+    },
+    p3: exit,
+  };
+
+  return {
+    approach,
+    exit,
+    hidden,
+    crossCurve,
+    outgoingCurve: curveBetween(approach, hidden, size * 0.12),
+    incomingCurve: curveBetween(hidden, exit, -size * 0.1),
+  };
+}
+
+function directionAt(curve: Curve, progress: number): 1 | -1 {
+  const before = cubicBezierPoint(curve, clamp(progress - 0.01));
+  const after = cubicBezierPoint(curve, clamp(progress + 0.01));
+  return after.x >= before.x ? 1 : -1;
+}
+
+function actorBounds(point: Point, size: number) {
+  return {
+    left: point.x,
+    top: point.y,
+    right: point.x + size,
+    bottom: point.y + size,
+  };
+}
+
+function curtainBoundsAt(rect: DocumentRect, scrollY: number) {
+  return {
+    left: rect.left,
+    right: rect.right,
+    top: rect.top - scrollY,
+    bottom: rect.bottom - scrollY,
+  };
+}
+
+function buildRoute(origin: DocumentRect, size: number, mobile: boolean): Scene[] | null {
+  const introElement = document.querySelector('[data-mascot-curtain="intro"]');
+  const paperInElement = document.querySelector('[data-mascot-curtain="paper-in"]');
+  const paperOutElement = document.querySelector('[data-mascot-curtain="paper-out"]');
+  const identityElement = document.querySelector('[data-mascot-curtain="identity"]');
+  const dockElement = document.querySelector("[data-mascot-dock]");
+  const footerElement = document.querySelector(".site-footer");
   if (
-    !sobre ||
-    !missoes ||
-    !experiencia ||
-    !paraQuem ||
-    !seguranca ||
-    !identidade ||
-    !contato
+    !introElement ||
+    !paperInElement ||
+    !paperOutElement ||
+    !identityElement ||
+    !dockElement ||
+    !footerElement
   ) {
     return null;
   }
 
-  const X_ESQ = mobile ? 14 : 7;
-  const X_DIR = mobile ? 70 : 86;
-  const LANE_BASE = mobile ? 42 : 68;
-  const LANE_CENA = mobile ? 56 : 96;
+  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+  if (maxScroll <= 0) return null;
 
-  const marcos: Marco[] = [
-    { p: sobre.ini + 0.015, x: X_ESQ, lane: LANE_BASE, visivel: true, poseParado: "movimento" },
-    { p: sobre.fim, x: X_DIR, lane: LANE_BASE, visivel: true, poseParado: "classico" },
-    // Tunel 1: some por tras das Missoes; reaparece ja em pose de papel.
-    { p: missoes.fim, x: X_ESQ, lane: LANE_BASE, visivel: false, poseParado: "papel" },
-    // Cena do papel: parado, examinando os planos da experiencia.
+  const curtains = [
     {
-      p: experiencia.ini + (experiencia.fim - experiencia.ini) * 0.45,
-      x: X_ESQ,
-      lane: LANE_CENA,
-      visivel: true,
-      poseParado: "papel",
+      id: "intro",
+      rect: documentRect(introElement),
+      from: "classico" as Pose,
+      to: "movimento" as Pose,
+      entry: "left" as Side,
     },
-    { p: experiencia.fim, x: X_DIR, lane: LANE_BASE, visivel: true, poseParado: "classico" },
-    // Tunel 2: por tras de "Para quem".
-    { p: paraQuem.fim, x: X_ESQ, lane: LANE_BASE, visivel: false, poseParado: "classico" },
-    { p: seguranca.fim, x: X_DIR, lane: LANE_BASE, visivel: true, poseParado: "classico" },
-    // Tunel 3: por tras de "Identidade".
-    { p: identidade.fim, x: 50, lane: LANE_CENA, visivel: false, poseParado: "classico" },
-    // Descanso final, acenando no "Contato".
-    { p: 1, x: 50, lane: LANE_CENA, visivel: true, poseParado: "classico" },
+    {
+      id: "paper-in",
+      rect: documentRect(paperInElement),
+      from: "movimento" as Pose,
+      to: "papel-a" as Pose,
+      entry: "left" as Side,
+    },
+    {
+      id: "paper-out",
+      rect: documentRect(paperOutElement),
+      from: "papel-b" as Pose,
+      to: "movimento" as Pose,
+      entry: "right" as Side,
+    },
+    {
+      id: "identity",
+      rect: documentRect(identityElement),
+      from: "movimento" as Pose,
+      to: "classico" as Pose,
+      entry: "right" as Side,
+    },
   ];
 
-  // Garante ordem estritamente crescente; descarta marcos comprimidos
-  // por secoes muito curtas em telas extremas.
-  const ordenados = marcos
-    .filter((m) => Number.isFinite(m.p))
-    .sort((a, b) => a.p - b.p)
-    .filter((m, i, arr) => i === 0 || m.p > arr[i - 1]!.p + 0.005);
-  return ordenados.length >= 3 ? ordenados : null;
+  const transitions = curtains.map((item) => {
+    const scrollWindow = transitionWindow(item.rect, window.innerHeight, maxScroll);
+    const points = transitionPoints(
+      item.rect,
+      scrollWindow.start,
+      scrollWindow.end,
+      size,
+      item.entry,
+    );
+    let strategy = chooseOcclusionStrategy(item.rect, size, Math.max(8, size * 0.06), mobile);
+
+    if (strategy === "simple") {
+      const middleScroll = (scrollWindow.start + scrollWindow.end) / 2;
+      const middlePoint = cubicBezierPoint(points.crossCurve, 0.5);
+      const contained = isFullyOccluded(
+        actorBounds(middlePoint, size),
+        curtainBoundsAt(item.rect, middleScroll),
+        Math.max(5, size * 0.035),
+      );
+      if (!contained) strategy = "dual";
+    }
+
+    const scene: TransitionScene = {
+      id: item.id,
+      kind: "transition",
+      start: scrollWindow.start,
+      end: scrollWindow.end,
+      curve: points.crossCurve,
+      outgoingCurve: points.outgoingCurve,
+      incomingCurve: points.incomingCurve,
+      scaleStart: 1,
+      scaleEnd: 1,
+      fromPose: item.from,
+      toPose: item.to,
+      strategy,
+      curtain: item.rect,
+    };
+    return { scene, approach: points.approach, exit: points.exit };
+  });
+
+  for (let index = 1; index < transitions.length; index += 1) {
+    const previous = transitions[index - 1];
+    const current = transitions[index];
+    if (!previous || !current || current.scene.start <= previous.scene.end + 80) return null;
+  }
+
+  const intro = transitions[0];
+  const paperIn = transitions[1];
+  const paperOut = transitions[2];
+  const identity = transitions[3];
+  if (!intro || !paperIn || !paperOut || !identity) return null;
+
+  const travelArc = mobile ? 18 : 44;
+  const originPoint = { x: origin.left, y: origin.top };
+  const initialScale = origin.width / size;
+  const departureEnd = Math.min(intro.scene.start * 0.32, window.innerHeight * 0.74);
+  const departurePoint = {
+    x: mobile
+      ? window.innerWidth - size - 18
+      : clamp(window.innerWidth * 0.58 - size / 2, 30, window.innerWidth - size - 30),
+    y: mobile
+      ? window.innerHeight - size - 34
+      : Math.min(origin.top + 90, window.innerHeight - size - 70),
+  };
+  const dock = documentRect(dockElement);
+  const footer = documentRect(footerElement);
+  const footerTopAtEnd = footer.top - maxScroll;
+  const dockY = clamp(
+    dock.top - maxScroll + Math.max(0, (dock.height - size) / 2),
+    mobile ? 150 : 110,
+    footerTopAtEnd - size - 18,
+  );
+  const dockPoint = {
+    x: clamp(dock.left + dock.width / 2 - size / 2, 14, window.innerWidth - size - 14),
+    y: dockY,
+  };
+
+  const scenes: Scene[] = [
+    {
+      id: "saida-hero-classico",
+      kind: "travel",
+      start: 0,
+      end: departureEnd,
+      curve: curveBetween(originPoint, departurePoint, travelArc * 0.55),
+      scaleStart: initialScale,
+      scaleEnd: mobile ? 1.16 : 1.22,
+      pose: "classico",
+    },
+    {
+      id: "aproximacao-intro-classico",
+      kind: "travel",
+      start: departureEnd,
+      end: intro.scene.start,
+      curve: curveBetween(departurePoint, intro.approach, -travelArc),
+      scaleStart: mobile ? 1.16 : 1.22,
+      scaleEnd: 1,
+      pose: "classico",
+    },
+    intro.scene,
+    {
+      id: "missoes-movimento",
+      kind: "travel",
+      start: intro.scene.end,
+      end: paperIn.scene.start,
+      curve: curveBetween(intro.exit, paperIn.approach, -travelArc),
+      scaleStart: 1,
+      scaleEnd: 1,
+      pose: "movimento",
+    },
+    paperIn.scene,
+    {
+      id: "observando-papel",
+      kind: "travel",
+      start: paperIn.scene.end,
+      end: paperOut.scene.start,
+      curve: stagingCurve(
+        paperIn.exit,
+        paperOut.approach,
+        window.innerWidth - size - (mobile ? 14 : 42),
+        mobile ? 10 : 24,
+      ),
+      scaleStart: 1,
+      scaleEnd: 1,
+      pose: "papel",
+    },
+    paperOut.scene,
+    {
+      id: "publico-seguranca-movimento",
+      kind: "travel",
+      start: paperOut.scene.end,
+      end: identity.scene.start,
+      curve: curveBetween(paperOut.exit, identity.approach, travelArc),
+      scaleStart: 1,
+      scaleEnd: 1,
+      pose: "movimento",
+    },
+    identity.scene,
+    {
+      id: "contato-classico",
+      kind: "travel",
+      start: identity.scene.end,
+      end: maxScroll,
+      curve: curveBetween(identity.exit, dockPoint, -travelArc * 0.65),
+      scaleStart: 1,
+      scaleEnd: 1,
+      pose: "classico",
+    },
+  ];
+
+  return scenes.every((scene) => scene.end > scene.start && Number.isFinite(scene.start))
+    ? scenes
+    : null;
+}
+
+function setPose(refs: ActorRefs, pose: Pose) {
+  for (const [key, image] of Object.entries(refs.images)) {
+    image?.classList.toggle("ativa", key === pose);
+  }
+  refs.element?.setAttribute("data-pose", pose);
+}
+
+function renderActor(refs: ActorRefs, state: ActorState, bounce: number, rotation: number) {
+  if (!refs.element || !refs.bounce || !refs.flip) return;
+  refs.element.style.opacity = state.visible ? "1" : "0";
+  refs.element.style.visibility = state.visible ? "visible" : "hidden";
+  refs.element.style.transform = `translate3d(${state.x.toFixed(1)}px, ${state.y.toFixed(1)}px, 0) rotate(${rotation.toFixed(2)}deg) scale(${state.scale.toFixed(4)})`;
+  refs.bounce.style.transform = `translate3d(0, ${bounce.toFixed(1)}px, 0)`;
+  refs.flip.style.transform = `scaleX(${state.pose === "movimento" ? state.direction : 1})`;
+  setPose(refs, state.pose);
+}
+
+function actorStateFromScene(scene: Scene, scrollY: number): ActorState {
+  const sampled = sampleScene(
+    scene,
+    scrollY,
+    scene.kind === "transition" ? gentleEase : smoothstep,
+  );
+  const pose =
+    scene.kind === "travel"
+      ? scene.pose === "papel"
+        ? (paperFrame(sampled.progress, true) ?? "papel-a")
+        : scene.pose
+      : sampled.progress < 0.5
+        ? scene.fromPose
+        : scene.toPose;
+
+  return {
+    x: sampled.x,
+    y: sampled.y,
+    scale: sampled.scale,
+    pose,
+    visible: true,
+    direction: directionAt(scene.curve, sampled.eased),
+  };
+}
+
+function dualActorStates(scene: TransitionScene, scrollY: number) {
+  const duration = Math.max(scene.end - scene.start, 1);
+  const progress = clamp((scrollY - scene.start) / duration);
+  const handoff = dualHandoff(progress, scene.fromPose, scene.toPose, OVERLAP_START, OVERLAP_END);
+  const outgoingProgress = gentleEase(clamp(progress / OVERLAP_END));
+  const incomingProgress = gentleEase(clamp((progress - OVERLAP_START) / (1 - OVERLAP_START)));
+  const outgoing = cubicBezierPoint(scene.outgoingCurve, outgoingProgress);
+  const incoming = cubicBezierPoint(scene.incomingCurve, incomingProgress);
+  const afterHandoff = handoff.phase === "after";
+
+  return {
+    primary: {
+      x: afterHandoff ? incoming.x : outgoing.x,
+      y: afterHandoff ? incoming.y : outgoing.y,
+      scale: 1,
+      pose: handoff.primaryPose as Pose,
+      visible: true,
+      direction: directionAt(
+        afterHandoff ? scene.incomingCurve : scene.outgoingCurve,
+        afterHandoff ? incomingProgress : outgoingProgress,
+      ),
+    } satisfies ActorState,
+    secondary: {
+      x: incoming.x,
+      y: incoming.y,
+      scale: 1,
+      pose: handoff.secondaryPose as Pose,
+      visible: handoff.secondaryVisible,
+      direction: directionAt(scene.incomingCurve, incomingProgress),
+    } satisfies ActorState,
+    phase: handoff.phase,
+  };
 }
 
 export default function MascotGuide() {
-  let guia: HTMLDivElement | undefined;
-  let salto: HTMLDivElement | undefined;
-  let flip: HTMLDivElement | undefined;
-  let imgClassico: HTMLImageElement | undefined;
-  let imgMovimento: HTMLImageElement | undefined;
-  let imgPapelA: HTMLImageElement | undefined;
-  let imgPapelB: HTMLImageElement | undefined;
+  let root: HTMLDivElement | undefined;
+  const primary: ActorRefs = { images: {} };
+  const secondary: ActorRefs = { images: {} };
 
   onMount(() => {
-    if (!guia || !salto || !flip || !imgClassico || !imgMovimento || !imgPapelA || !imgPapelB) {
+    if (!root || !primary.element || !primary.bounce || !primary.flip || !secondary.element) {
       return;
     }
-    const elGuia = guia;
-    const elSalto = salto;
-    const elFlip = flip;
-    const elClassico = imgClassico;
-    const elMovimento = imgMovimento;
-    const elPapelA = imgPapelA;
-    const elPapelB = imgPapelB;
 
-    const reduzMovimento = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const consultaMobile = window.matchMedia("(max-width: 45rem)");
+    const element = root;
+    const originalParent = element.parentElement;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const mobileQuery = window.matchMedia(MOBILE_QUERY);
+    const tabletQuery = window.matchMedia(TABLET_QUERY);
+    let scenes: Scene[] | null = null;
+    let targetScroll = window.scrollY;
+    let currentScroll = targetScroll;
+    let frame = 0;
+    let rebuildFrame = 0;
+    let active = false;
 
-    let rota: Marco[] | null = null;
-    let alvo = 0;
-    let atual = 0;
-    let raf = 0;
-    let ativo = false;
-    let poseAtual: Pose | null = null;
-    let flipAtual = 1;
-    let papelB = false;
-    let papelTimer: number | undefined;
-
-    const definirPose = (pose: Pose) => {
-      if (pose === poseAtual) return;
-      poseAtual = pose;
-      elClassico.classList.toggle("ativa", pose === "classico");
-      elMovimento.classList.toggle("ativa", pose === "movimento");
-      elPapelA.classList.toggle("ativa", pose === "papel" && !papelB);
-      elPapelB.classList.toggle("ativa", pose === "papel" && papelB);
-
-      // Espelha apenas o sprite de movimento; poses com papel e a
-      // classica nunca sao espelhadas.
-      if (pose !== "movimento" && flipAtual !== 1) {
-        flipAtual = 1;
-        elFlip.style.transform = "scaleX(1)";
-      }
-
-      // Alternancia A/B somente enquanto a cena do papel estiver ativa.
-      if (pose === "papel" && papelTimer === undefined) {
-        papelTimer = window.setInterval(() => {
-          papelB = !papelB;
-          elPapelA.classList.toggle("ativa", !papelB);
-          elPapelB.classList.toggle("ativa", papelB);
-        }, DURACAO_PAPEL_MS);
-      } else if (pose !== "papel" && papelTimer !== undefined) {
-        window.clearInterval(papelTimer);
-        papelTimer = undefined;
-        papelB = false;
+    const loadSprites = () => {
+      for (const image of element.querySelectorAll<HTMLImageElement>("img[data-src]")) {
+        image.src = image.dataset.src ?? "";
+        image.removeAttribute("data-src");
       }
     };
 
-    const aplicarFrame = (p: number) => {
-      if (!rota) return;
-      if (p < rota[0]!.p) {
-        elGuia.style.opacity = "0";
+    const travelSize = () => {
+      if (mobileQuery.matches) return 112;
+      if (tabletQuery.matches) return 148;
+      return 190;
+    };
+
+    const applyFrame = (scrollY: number, lag: number) => {
+      if (!scenes) return;
+      const scene = selectScene(scenes, scrollY);
+      const moving = scene.kind === "travel" && scene.end - scene.start > 1;
+      const amplitude = moving ? Math.min(5, Math.abs(lag) * 0.035) : 0;
+      const bounce = -Math.abs(Math.sin(scrollY * 0.017)) * amplitude;
+      const rotation = moving ? Math.sin(scrollY * 0.008) * Math.min(1.8, amplitude * 0.38) : 0;
+
+      element.dataset.scene = scene.id;
+      element.dataset.occlusion = scene.kind === "transition" ? scene.strategy : "none";
+      primary.element?.classList.toggle("em-repouso", scrollY < 3 && Math.abs(lag) < 0.1);
+
+      if (scene.kind === "transition" && scene.strategy === "dual") {
+        const states = dualActorStates(scene, scrollY);
+        element.dataset.handoff = states.phase;
+        renderActor(primary, states.primary, 0, 0);
+        renderActor(secondary, states.secondary, 0, 0);
         return;
       }
 
-      // Perna atual: marco i -> i+1
-      let i = 0;
-      while (i < rota.length - 2 && p > rota[i + 1]!.p) i++;
-      const a = rota[i]!;
-      const b = rota[i + 1]!;
-
-      const t = limite((p - a.p) / Math.max(b.p - a.p, 1e-6), 0, 1);
-      const e = t * t * (3 - 2 * t); // smoothstep: trajetoria curva e suave
-
-      const x = a.x + (b.x - a.x) * e;
-      const dx = b.x - a.x;
-      const viajando = Math.abs(dx) > 0.01;
-
-      // Arco da trajetoria + pulinhos enquanto caminha (transform puro)
-      const pulos = viajando ? Math.abs(Math.sin(e * Math.PI * 3)) * 11 : 0;
-      const arco = viajando ? Math.sin(Math.PI * e) * 24 : 0;
-      const lane = a.lane + (b.lane - a.lane) * e;
-
-      const tam = elGuia.offsetWidth || 190;
-      const xPx = (x / 100) * window.innerWidth - tam / 2;
-      const yPx = window.innerHeight - lane - tam;
-
-      elGuia.style.opacity = b.visivel ? "1" : "0";
-      elGuia.style.transform = `translate3d(${xPx.toFixed(1)}px, ${yPx.toFixed(1)}px, 0)`;
-      elSalto.style.transform = `translate3d(0, ${(-(pulos + arco)).toFixed(1)}px, 0)`;
-
-      if (viajando) {
-        const direcao = dx >= 0 ? 1 : -1;
-        if (direcao !== flipAtual) {
-          flipAtual = direcao;
-          elFlip.style.transform = `scaleX(${flipAtual})`;
-        }
-      }
-
-      definirPose(viajando ? "movimento" : b.poseParado);
-    };
-
-    const calcularAlvo = () => {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      alvo = max > 0 ? limite(window.scrollY / max, 0, 1) : 0;
+      delete element.dataset.handoff;
+      renderActor(primary, actorStateFromScene(scene, scrollY), bounce, rotation);
+      renderActor(
+        secondary,
+        {
+          x: 0,
+          y: 0,
+          scale: 1,
+          pose: "classico",
+          visible: false,
+          direction: 1,
+        },
+        0,
+        0,
+      );
     };
 
     const tick = () => {
-      raf = 0;
-      const d = alvo - atual;
-      if (Math.abs(d) < 0.00035) {
-        if (atual !== alvo) {
-          atual = alvo;
-          aplicarFrame(atual);
-        }
+      frame = 0;
+      const lag = targetScroll - currentScroll;
+      if (Math.abs(lag) < 0.12) {
+        currentScroll = targetScroll;
+        applyFrame(currentScroll, 0);
         return;
       }
-      atual += d * 0.16;
-      aplicarFrame(atual);
-      raf = requestAnimationFrame(tick);
+
+      currentScroll += lag * 0.14;
+      applyFrame(currentScroll, lag);
+      frame = requestAnimationFrame(tick);
     };
 
-    const agendar = () => {
-      if (!raf && ativo) raf = requestAnimationFrame(tick);
+    const schedule = () => {
+      if (!frame && active) frame = requestAnimationFrame(tick);
     };
 
-    const aoRolar = () => {
-      calcularAlvo();
-      agendar();
-    };
+    const rebuild = () => {
+      rebuildFrame = 0;
+      if (!active) return;
+      const originElement = document.querySelector("[data-mascot-origin]");
+      if (!originElement) {
+        scenes = null;
+        return;
+      }
 
-    const remontar = () => {
-      rota = construirRota(consultaMobile.matches);
-      elGuia.style.setProperty("--tam", consultaMobile.matches ? "7rem" : "11.875rem");
-      calcularAlvo();
-      atual = alvo; // recalibra sem animacao
-      aplicarFrame(atual);
-    };
-
-    const atualizarAtivacao = () => {
-      const deveAtivar = !reduzMovimento.matches;
-      if (deveAtivar === ativo) return;
-      ativo = deveAtivar;
-      elGuia.hidden = !ativo;
-      if (ativo) {
-        remontar();
-        agendar();
+      const size = travelSize();
+      element.style.setProperty("--mascot-size", `${size}px`);
+      scenes = buildRoute(documentRect(originElement), size, mobileQuery.matches);
+      targetScroll = window.scrollY;
+      currentScroll = targetScroll;
+      if (scenes) {
+        element.style.visibility = "visible";
+        applyFrame(currentScroll, 0);
       } else {
-        if (raf) {
-          cancelAnimationFrame(raf);
-          raf = 0;
-        }
-        if (papelTimer !== undefined) {
-          window.clearInterval(papelTimer);
-          papelTimer = undefined;
-        }
+        element.style.visibility = "hidden";
       }
     };
 
-    // Carregamento progressivo: os sprites so sao buscados agora,
-    // depois do idle (o classico ja veio pre-carregado do <head>).
-    elMovimento.src = ASSETS.mascot.movimento;
-    elPapelA.src = ASSETS.mascot.papelA;
-    elPapelB.src = ASSETS.mascot.papelB;
-    elClassico.src = ASSETS.mascot.classico;
+    const scheduleRebuild = () => {
+      if (rebuildFrame) cancelAnimationFrame(rebuildFrame);
+      rebuildFrame = requestAnimationFrame(rebuild);
+    };
 
-    atualizarAtivacao();
+    const activate = () => {
+      if (active || !originalParent) return;
+      active = true;
+      loadSprites();
+      element.style.visibility = "hidden";
+      element.classList.add("is-fixed");
+      document.body.classList.add("mascot-scroll-active");
+      document.body.append(element);
+      rebuild();
+    };
 
-    window.addEventListener("scroll", aoRolar, { passive: true });
-    window.addEventListener("resize", remontar);
-    // Recalcula quando o layout estabiliza (imagens podem mover secoes).
-    window.addEventListener("load", remontar);
-    reduzMovimento.addEventListener("change", atualizarAtivacao);
-    consultaMobile.addEventListener("change", remontar);
+    const deactivate = () => {
+      if (!active || !originalParent) return;
+      active = false;
+      if (frame) cancelAnimationFrame(frame);
+      frame = 0;
+      scenes = null;
+      element.style.visibility = "hidden";
+      document.body.classList.remove("mascot-scroll-active");
+      originalParent.append(element);
+      element.classList.remove("is-fixed");
+      element.removeAttribute("style");
+      primary.element?.classList.remove("em-repouso");
+      setPose(primary, "classico");
+      if (primary.element) {
+        primary.element.style.removeProperty("transform");
+        primary.element.style.removeProperty("opacity");
+        primary.element.style.removeProperty("visibility");
+      }
+      if (primary.bounce) primary.bounce.style.removeProperty("transform");
+      if (primary.flip) primary.flip.style.removeProperty("transform");
+      if (secondary.element) {
+        secondary.element.style.opacity = "0";
+        secondary.element.style.visibility = "hidden";
+      }
+      element.style.visibility = "visible";
+    };
+
+    const updateMotionPreference = () => {
+      if (reducedMotion.matches) deactivate();
+      else activate();
+    };
+
+    const onScroll = () => {
+      targetScroll = window.scrollY;
+      schedule();
+    };
+
+    const resizeObserver = new ResizeObserver(scheduleRebuild);
+    for (const marker of document.querySelectorAll(
+      "[data-mascot-origin], [data-mascot-curtain], [data-mascot-dock]",
+    )) {
+      resizeObserver.observe(marker);
+    }
+
+    updateMotionPreference();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", scheduleRebuild);
+    window.addEventListener("load", scheduleRebuild);
+    reducedMotion.addEventListener("change", updateMotionPreference);
+    mobileQuery.addEventListener("change", scheduleRebuild);
+    tabletQuery.addEventListener("change", scheduleRebuild);
 
     onCleanup(() => {
-      window.removeEventListener("scroll", aoRolar);
-      window.removeEventListener("resize", remontar);
-      window.removeEventListener("load", remontar);
-      reduzMovimento.removeEventListener("change", atualizarAtivacao);
-      consultaMobile.removeEventListener("change", remontar);
-      if (raf) cancelAnimationFrame(raf);
-      if (papelTimer !== undefined) window.clearInterval(papelTimer);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", scheduleRebuild);
+      window.removeEventListener("load", scheduleRebuild);
+      reducedMotion.removeEventListener("change", updateMotionPreference);
+      mobileQuery.removeEventListener("change", scheduleRebuild);
+      tabletQuery.removeEventListener("change", scheduleRebuild);
+      resizeObserver.disconnect();
+      if (frame) cancelAnimationFrame(frame);
+      if (rebuildFrame) cancelAnimationFrame(rebuildFrame);
+      document.body.classList.remove("mascot-scroll-active");
+      if (originalParent && element.parentElement !== originalParent)
+        originalParent.append(element);
     });
   });
 
   return (
-    <div id="mascote-guia" ref={guia} hidden aria-hidden="true" style={{ opacity: 0 }}>
-      <div class="mascote-flip" ref={flip}>
-        <div class="mascote-salto" ref={salto}>
-          {/* Sem src no SSR: os arquivos so sao buscados apos o idle,
-              quando a hidratacao define os caminhos. */}
-          <img ref={imgClassico} alt="" width={ASSETS.mascot.width} height={ASSETS.mascot.height} draggable="false" decoding="async" />
-          <img ref={imgMovimento} alt="" width={ASSETS.mascot.width} height={ASSETS.mascot.height} draggable="false" decoding="async" />
-          <img ref={imgPapelA} alt="" width={ASSETS.mascot.width} height={ASSETS.mascot.height} draggable="false" decoding="async" />
-          <img ref={imgPapelB} alt="" width={ASSETS.mascot.width} height={ASSETS.mascot.height} draggable="false" decoding="async" />
+    <div id="mascote-guia" ref={root}>
+      <div
+        class="mascote-ator principal"
+        ref={(element) => (primary.element = element)}
+        data-pose="classico"
+      >
+        <div class="mascote-flip" ref={(element) => (primary.flip = element)}>
+          <div class="mascote-bounce" ref={(element) => (primary.bounce = element)}>
+            <img
+              ref={(element) => (primary.images.classico = element)}
+              class="ativa"
+              src={ASSETS.mascot.classico}
+              alt="Caramelinho, o cachorrinho mascote do PSE Nova Santa Rita, acenando com mochila e escova de dentes"
+              width={ASSETS.mascot.width}
+              height={ASSETS.mascot.height}
+              draggable="false"
+              fetchpriority="high"
+              decoding="async"
+            />
+            <img
+              ref={(element) => (primary.images.movimento = element)}
+              data-src={ASSETS.mascot.movimento}
+              alt=""
+              width={ASSETS.mascot.width}
+              height={ASSETS.mascot.height}
+              draggable="false"
+              decoding="async"
+            />
+            <img
+              ref={(element) => (primary.images["papel-a"] = element)}
+              data-src={ASSETS.mascot.papelA}
+              alt=""
+              width={ASSETS.mascot.width}
+              height={ASSETS.mascot.height}
+              draggable="false"
+              decoding="async"
+            />
+            <img
+              ref={(element) => (primary.images["papel-b"] = element)}
+              data-src={ASSETS.mascot.papelB}
+              alt=""
+              width={ASSETS.mascot.width}
+              height={ASSETS.mascot.height}
+              draggable="false"
+              decoding="async"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="mascote-ator secundario"
+        ref={(element) => (secondary.element = element)}
+        aria-hidden="true"
+      >
+        <div class="mascote-flip" ref={(element) => (secondary.flip = element)}>
+          <div class="mascote-bounce" ref={(element) => (secondary.bounce = element)}>
+            <img
+              ref={(element) => (secondary.images.classico = element)}
+              data-src={ASSETS.mascot.classico}
+              alt=""
+              width={ASSETS.mascot.width}
+              height={ASSETS.mascot.height}
+              draggable="false"
+              decoding="async"
+            />
+            <img
+              ref={(element) => (secondary.images.movimento = element)}
+              data-src={ASSETS.mascot.movimento}
+              alt=""
+              width={ASSETS.mascot.width}
+              height={ASSETS.mascot.height}
+              draggable="false"
+              decoding="async"
+            />
+            <img
+              ref={(element) => (secondary.images["papel-a"] = element)}
+              data-src={ASSETS.mascot.papelA}
+              alt=""
+              width={ASSETS.mascot.width}
+              height={ASSETS.mascot.height}
+              draggable="false"
+              decoding="async"
+            />
+            <img
+              ref={(element) => (secondary.images["papel-b"] = element)}
+              data-src={ASSETS.mascot.papelB}
+              alt=""
+              width={ASSETS.mascot.width}
+              height={ASSETS.mascot.height}
+              draggable="false"
+              decoding="async"
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -3,20 +3,14 @@ import { PUBLICO } from "../config/site";
 import Icon from "./Icon.astro";
 ---
 
-<section
-  class="secao para-quem cobre-mascote"
-  id="para-quem"
-  aria-labelledby="titulo-para-quem"
->
+<section class="secao para-quem" id="para-quem" aria-labelledby="titulo-para-quem">
   <div class="container">
     <div class="cabecalho-secao centrado">
       <span class="kicker"><Icon name="respeito" size={15} /> Para quem</span>
-      <h2 class="titulo-secao" id="titulo-para-quem">
-        Feito para quem cuida das nossas crianças
-      </h2>
+      <h2 class="titulo-secao" id="titulo-para-quem">Feito para quem cuida das nossas crianças</h2>
       <p class="subtitulo-secao">
-        O projeto acompanha a criança em todos os lugares — e dá suporte a
-        todos os adultos que fazem parte dessa jornada.
+        O projeto acompanha a criança em todos os lugares — e dá suporte a todos os adultos que
+        fazem parte dessa jornada.
       </p>
     </div>
 
@@ -77,9 +71,18 @@ import Icon from "./Icon.astro";
     border-radius: 1.5rem;
   }
 
-  .cor-verde .publico-icone { background: var(--verde-claro); color: var(--verde-escuro); }
-  .cor-azul .publico-icone { background: var(--azul-claro); color: var(--azul-escuro); }
-  .cor-laranja .publico-icone { background: var(--laranja-claro); color: var(--laranja-escuro); }
+  .cor-verde .publico-icone {
+    background: var(--verde-claro);
+    color: var(--verde-escuro);
+  }
+  .cor-azul .publico-icone {
+    background: var(--azul-claro);
+    color: var(--azul-escuro);
+  }
+  .cor-laranja .publico-icone {
+    background: var(--laranja-claro);
+    color: var(--laranja-escuro);
+  }
 
   @media (max-width: 48rem) {
     .grade-publico {

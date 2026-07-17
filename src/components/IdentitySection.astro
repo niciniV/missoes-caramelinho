@@ -3,20 +3,13 @@ import { CORES_IDENTIDADE } from "../config/site";
 import Icon from "./Icon.astro";
 ---
 
-<section
-  class="secao identidade cobre-mascote"
-  id="identidade"
-  aria-labelledby="titulo-identidade"
->
+<section class="secao identidade" id="identidade" aria-labelledby="titulo-identidade">
   <div class="container identidade-grade">
     <div>
       <span class="kicker azul"><Icon name="brilho" size={15} /> Identidade</span>
-      <h2 class="titulo-secao" id="titulo-identidade">
-        As cores da nossa identidade
-      </h2>
+      <h2 class="titulo-secao" id="titulo-identidade">As cores da nossa identidade</h2>
       <p class="subtitulo-secao">
-        Unindo escola, família e saúde para formar cidadãos mais saudáveis,
-        conscientes e felizes.
+        Unindo escola, família e saúde para formar cidadãos mais saudáveis, conscientes e felizes.
       </p>
 
       <ul class="lista-cores">
@@ -34,12 +27,11 @@ import Icon from "./Icon.astro";
       </ul>
     </div>
 
-    <aside class="cartao-valores" aria-label="Valores do programa">
+    <aside class="cartao-valores" aria-label="Valores do programa" data-mascot-curtain="identity">
       <h3>Juntos por nossas crianças</h3>
       <p>
-        Uma iniciativa pública do município de Nova Santa Rita, construída
-        com escuta, cuidado e participação de educadores, famílias e
-        profissionais de saúde.
+        Uma iniciativa pública do município de Nova Santa Rita, construída com escuta, cuidado e
+        participação de educadores, famílias e profissionais de saúde.
       </p>
       <p class="cartao-valores-nota">
         <!-- [PLACEHOLDER] Incluir aqui, quando confirmadas, as secretarias
@@ -91,11 +83,21 @@ import Icon from "./Icon.astro";
     border-radius: 50%;
     box-shadow: inset 0 -3px 0 rgb(0 0 0 / 0.15);
   }
-  .amostra-verde { background: var(--verde); }
-  .amostra-azul { background: var(--azul); }
-  .amostra-amarelo { background: var(--amarelo); }
-  .amostra-laranja { background: var(--laranja); }
-  .amostra-roxo { background: var(--roxo); }
+  .amostra-verde {
+    background: var(--verde);
+  }
+  .amostra-azul {
+    background: var(--azul);
+  }
+  .amostra-amarelo {
+    background: var(--amarelo);
+  }
+  .amostra-laranja {
+    background: var(--laranja);
+  }
+  .amostra-roxo {
+    background: var(--roxo);
+  }
 
   .lista-cores strong {
     display: block;

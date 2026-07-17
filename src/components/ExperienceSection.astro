@@ -3,11 +3,7 @@ import { ASSETS, PREVISTO, TRILHA } from "../config/site";
 import Icon from "./Icon.astro";
 ---
 
-<section
-  class="secao experiencia"
-  id="experiencia"
-  aria-labelledby="titulo-experiencia"
->
+<section class="secao experiencia" id="experiencia" aria-labelledby="titulo-experiencia">
   <div class="container">
     <div class="cabecalho-secao">
       <span class="kicker laranja"><Icon name="patinha" size={15} /> A experiência</span>
@@ -15,10 +11,9 @@ import Icon from "./Icon.astro";
         Um dia inteiro de aprendizado, casa por casa
       </h2>
       <p class="subtitulo-secao">
-        A experiência educativa digital do {`PSE Nova Santa Rita`} está sendo
-        preparada no formato de um jogo de tabuleiro: o percurso acompanha um
-        dia na vida escolar, da saída de casa até o retorno — com desafios,
-        escolhas e estrelinhas de incentivo pelo caminho.
+        A experiência educativa digital do {`PSE Nova Santa Rita`} está sendo preparada no formato de
+        um jogo de tabuleiro: o percurso acompanha um dia na vida escolar, da saída de casa até o retorno
+        — com desafios, escolhas e estrelinhas de incentivo pelo caminho.
       </p>
     </div>
 
@@ -28,7 +23,9 @@ import Icon from "./Icon.astro";
         {
           TRILHA.map((passo, i) => (
             <li class="casa" style={`--i:${i}`}>
-              <span class="casa-numero" aria-hidden="true">{i + 1}</span>
+              <span class="casa-numero" aria-hidden="true">
+                {i + 1}
+              </span>
               <div>
                 <h3>{passo.titulo}</h3>
                 <p>{passo.texto}</p>
@@ -40,7 +37,7 @@ import Icon from "./Icon.astro";
 
       <!-- Arte conceitual + previsto -->
       <div class="experiencia-lado">
-        <figure class="arte-conceitual">
+        <figure class="arte-conceitual" data-mascot-curtain="paper-in">
           <img
             src={ASSETS.arteConceitual}
             alt="Arte conceitual do jogo de tabuleiro em desenvolvimento: um caminho de casas numeradas entre a casa e a escola, com o Caramelinho no início do percurso"
@@ -55,7 +52,7 @@ import Icon from "./Icon.astro";
           </figcaption>
         </figure>
 
-        <div class="previsto">
+        <div class="previsto" data-mascot-curtain="paper-out">
           <h3>O que está previsto</h3>
           <ul>
             {
@@ -68,8 +65,8 @@ import Icon from "./Icon.astro";
             }
           </ul>
           <p class="previsto-nota">
-            Nenhuma funcionalidade está disponível ainda: esta página será
-            atualizada quando a experiência estiver pronta para as escolas.
+            Nenhuma funcionalidade está disponível ainda: esta página será atualizada quando a
+            experiência estiver pronta para as escolas.
           </p>
         </div>
       </div>
@@ -141,12 +138,25 @@ import Icon from "./Icon.astro";
     box-shadow: inset 0 -3px 0 rgb(0 0 0 / 0.18);
   }
 
-  .casa:nth-child(6n + 1) .casa-numero { background: var(--verde); }
-  .casa:nth-child(6n + 2) .casa-numero { background: var(--laranja); }
-  .casa:nth-child(6n + 3) .casa-numero { background: var(--azul); }
-  .casa:nth-child(6n + 4) .casa-numero { background: var(--amarelo); color: var(--tinta); }
-  .casa:nth-child(6n + 5) .casa-numero { background: var(--agua); }
-  .casa:nth-child(6n + 6) .casa-numero { background: var(--roxo); }
+  .casa:nth-child(6n + 1) .casa-numero {
+    background: var(--verde);
+  }
+  .casa:nth-child(6n + 2) .casa-numero {
+    background: var(--laranja);
+  }
+  .casa:nth-child(6n + 3) .casa-numero {
+    background: var(--azul);
+  }
+  .casa:nth-child(6n + 4) .casa-numero {
+    background: var(--amarelo);
+    color: var(--tinta);
+  }
+  .casa:nth-child(6n + 5) .casa-numero {
+    background: var(--agua);
+  }
+  .casa:nth-child(6n + 6) .casa-numero {
+    background: var(--roxo);
+  }
 
   .casa h3 {
     font-size: 1.08rem;

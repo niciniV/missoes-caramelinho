@@ -11,7 +11,6 @@ import IdentitySection from "../components/IdentitySection.astro";
 import ValuesBand from "../components/ValuesBand.astro";
 import ContactSection from "../components/ContactSection.astro";
 import SiteFooter from "../components/SiteFooter.astro";
-import MascotGuide from "../components/solid/MascotGuide";
 ---
 
 <BaseLayout>
@@ -30,8 +29,4 @@ import MascotGuide from "../components/solid/MascotGuide";
   </main>
 
   <SiteFooter />
-
-  <!-- Ilha interativa: o Caramelinho acompanha a rolagem.
-       Hidrata somente no idle; sem JS a pagina permanece completa. -->
-  <MascotGuide client:idle />
 </BaseLayout>

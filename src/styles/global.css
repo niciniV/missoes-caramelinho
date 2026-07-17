@@ -53,8 +53,7 @@
   --missao-laranja-fg: var(--laranja-escuro);
 
   /* Tipografia — pilha do sistema, sem fontes externas */
-  --fonte:
-    "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --fonte: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
 
   /* Raios e sombras */
   --raio-s: 12px;
@@ -160,13 +159,24 @@ a {
   position: relative;
 }
 
-/*
- * Secoes que passam NA FRENTE do mascote durante as "tuneis":
- * precisam de fundo opaco e z-index acima da camada do mascote (30).
- */
-.cobre-mascote {
+/* O conteudo permanece acima do guia; areas transparentes deixam a rota visivel. */
+.secao > .container {
   position: relative;
   z-index: 40;
+}
+
+[data-mascot-curtain] {
+  position: relative;
+  z-index: 41;
+  isolation: isolate;
+}
+
+.mascote-dock {
+  height: 0;
+}
+
+body.mascot-scroll-active .mascote-dock {
+  height: clamp(8rem, 14vw, 13.5rem);
 }
 
 .cabecalho-secao {
@@ -305,31 +315,54 @@ h3 {
 /* ------------------------------------------------------------ */
 
 #mascote-guia {
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 30;
-  width: var(--tam, 11.875rem);
-  height: var(--tam, 11.875rem);
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
   user-select: none;
-  will-change: transform;
-  contain: layout style;
-  transition: opacity 0.35s ease;
+  visibility: visible;
 }
 
-#mascote-guia[hidden] {
-  display: none;
+#mascote-guia.is-fixed {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  width: 100vw;
+  height: 100vh;
+  contain: strict;
+  overflow: visible;
 }
 
+#mascote-guia .mascote-ator,
 #mascote-guia .mascote-flip,
-#mascote-guia .mascote-salto {
-  position: relative;
+#mascote-guia .mascote-bounce {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
 }
 
-#mascote-guia .mascote-salto {
+#mascote-guia .mascote-ator {
+  transform-origin: top left;
+}
+
+#mascote-guia .mascote-ator.secundario {
+  visibility: hidden;
+  opacity: 0;
+}
+
+#mascote-guia.is-fixed .mascote-ator {
+  inset: auto;
+  left: 0;
+  top: 0;
+  width: var(--mascot-size, 11.875rem);
+  height: var(--mascot-size, 11.875rem);
+  will-change: transform;
+}
+
+#mascote-guia.is-fixed .mascote-flip,
+#mascote-guia.is-fixed .mascote-bounce {
   will-change: transform;
 }
 
@@ -340,13 +373,25 @@ h3 {
   height: 100%;
   object-fit: contain;
   opacity: 0;
-  transition: opacity 0.18s ease;
-  /* Sombras estaticas sao baratas; nenhum filtro animado por rolagem */
   filter: drop-shadow(0 10px 14px rgb(35 64 46 / 0.25));
 }
 
 #mascote-guia img.ativa {
   opacity: 1;
+}
+
+#mascote-guia .mascote-ator.em-repouso .mascote-bounce {
+  animation: respirar-mascote 5.5s ease-in-out infinite;
+}
+
+@keyframes respirar-mascote {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, -3px, 0) rotate(-0.5deg);
+  }
 }
 
 /* ------------------------------------------------------------ */

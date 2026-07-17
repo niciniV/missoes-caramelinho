@@ -5,9 +5,7 @@ import Icon from "./Icon.astro";
 // [PLACEHOLDER] Enquanto os canais oficiais nao forem confirmados,
 // exibimos um cartao informativo generico. Quando CONTATO estiver
 // preenchido em src/config/site.ts, os dados aparecem automaticamente.
-const temContato = Boolean(
-  CONTATO.email || CONTATO.telefone || CONTATO.sitePrefeitura,
-);
+const temContato = Boolean(CONTATO.email || CONTATO.telefone || CONTATO.sitePrefeitura);
 ---
 
 <section class="secao contato" id="contato" aria-labelledby="titulo-contato">
@@ -16,9 +14,8 @@ const temContato = Boolean(
       <span class="kicker"><Icon name="coracao" size={15} /> Contato</span>
       <h2 class="titulo-secao" id="titulo-contato">Quer saber mais?</h2>
       <p class="subtitulo-secao">
-        Escolas, educadores, famílias e profissionais de saúde que quiserem
-        acompanhar ou participar do projeto podem falar com a equipe do
-        município pelos canais oficiais.
+        Escolas, educadores, famílias e profissionais de saúde que quiserem acompanhar ou participar
+        do projeto podem falar com a equipe do município pelos canais oficiais.
       </p>
     </div>
 
@@ -66,9 +63,8 @@ const temContato = Boolean(
             </span>
             <h3>Canais oficiais em definição</h3>
             <p>
-              Este espaço será atualizado com os contatos da equipe
-              responsável pelo {SITE.nome}. Enquanto isso, procure a
-              Prefeitura de Nova Santa Rita pelos canais institucionais já
+              Este espaço será atualizado com os contatos da equipe responsável pelo {SITE.nome}.
+              Enquanto isso, procure a Prefeitura de Nova Santa Rita pelos canais institucionais já
               existentes.
             </p>
             {/* [PLACEHOLDER] Substituir por e-mail, telefone e endereco
@@ -78,6 +74,7 @@ const temContato = Boolean(
       }
     </div>
   </div>
+  <div class="container mascote-dock" data-mascot-dock aria-hidden="true"></div>
 </section>
 
 <style>

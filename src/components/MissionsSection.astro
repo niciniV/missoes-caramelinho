@@ -7,20 +7,14 @@ import Icon from "./Icon.astro";
   Secao de missoes: os cards tem fundo opaco e z-index acima do mascote,
   criando o "tunel" por onde ele passa por tras durante a rolagem.
 -->
-<section
-  class="secao missoes cobre-mascote"
-  id="missoes"
-  aria-labelledby="titulo-missoes"
->
+<section class="secao missoes" id="missoes" aria-labelledby="titulo-missoes">
   <div class="container">
     <div class="cabecalho-secao centrado">
       <span class="kicker azul"><Icon name="estrela" size={15} /> Nossas missões</span>
-      <h2 class="titulo-secao" id="titulo-missoes">
-        Sete missões para crescer saudável e feliz
-      </h2>
+      <h2 class="titulo-secao" id="titulo-missoes">Sete missões para crescer saudável e feliz</h2>
       <p class="subtitulo-secao">
-        Cada missão é um convite para cuidar do corpo, das emoções e das
-        amizades — em casa, na escola e no caminho entre os dois.
+        Cada missão é um convite para cuidar do corpo, das emoções e das amizades — em casa, na
+        escola e no caminho entre os dois.
       </p>
     </div>
 
@@ -48,8 +42,7 @@ import Icon from "./Icon.astro";
 
 <style>
   .missoes {
-    background:
-      linear-gradient(180deg, var(--grama) 0%, #f6faef 100%);
+    background: linear-gradient(180deg, var(--grama) 0%, #f6faef 100%);
     border-block: 1px solid var(--linha);
   }
 
@@ -97,13 +90,34 @@ import Icon from "./Icon.astro";
     border-radius: 50%;
   }
 
-  .cor-verde .missao-icone { background: var(--missao-verde-bg); color: var(--missao-verde-fg); }
-  .cor-azul .missao-icone { background: var(--missao-azul-bg); color: var(--missao-azul-fg); }
-  .cor-roxo .missao-icone { background: var(--missao-roxo-bg); color: var(--missao-roxo-fg); }
-  .cor-amarelo .missao-icone { background: var(--missao-amarelo-bg); color: var(--missao-amarelo-fg); }
-  .cor-coral .missao-icone { background: var(--missao-coral-bg); color: var(--missao-coral-fg); }
-  .cor-agua .missao-icone { background: var(--missao-agua-bg); color: var(--missao-agua-fg); }
-  .cor-laranja .missao-icone { background: var(--missao-laranja-bg); color: var(--missao-laranja-fg); }
+  .cor-verde .missao-icone {
+    background: var(--missao-verde-bg);
+    color: var(--missao-verde-fg);
+  }
+  .cor-azul .missao-icone {
+    background: var(--missao-azul-bg);
+    color: var(--missao-azul-fg);
+  }
+  .cor-roxo .missao-icone {
+    background: var(--missao-roxo-bg);
+    color: var(--missao-roxo-fg);
+  }
+  .cor-amarelo .missao-icone {
+    background: var(--missao-amarelo-bg);
+    color: var(--missao-amarelo-fg);
+  }
+  .cor-coral .missao-icone {
+    background: var(--missao-coral-bg);
+    color: var(--missao-coral-fg);
+  }
+  .cor-agua .missao-icone {
+    background: var(--missao-agua-bg);
+    color: var(--missao-agua-fg);
+  }
+  .cor-laranja .missao-icone {
+    background: var(--missao-laranja-bg);
+    color: var(--missao-laranja-fg);
+  }
 
   .cor-extra {
     border-style: dashed;
