@@ -13,22 +13,24 @@
 /* Assets                                                              */
 /* ------------------------------------------------------------------ */
 
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+
 export const ASSETS = {
   mascot: {
     /** Pose principal de apresentacao (acenando). */
-    classico: "/assets/mascot/caramelinho-classico.webp",
+    classico: `${BASE}/assets/mascot/caramelinho-classico.webp`,
     /** Pose de deslocamento/caminhada. */
-    movimento: "/assets/mascot/caramelinho-movimento.webp",
+    movimento: `${BASE}/assets/mascot/caramelinho-movimento.webp`,
     /** Quadro A da cena "observando uma folha". */
-    papelA: "/assets/mascot/caramelinho-papel-a.webp",
+    papelA: `${BASE}/assets/mascot/caramelinho-papel-a.webp`,
     /** Quadro B da cena "observando uma folha" (rabo abanando). */
-    papelB: "/assets/mascot/caramelinho-papel-b.webp",
+    papelB: `${BASE}/assets/mascot/caramelinho-papel-b.webp`,
     /** Largura/altura naturais dos sprites (quadrados, com margem interna). */
     width: 640,
     height: 640,
   },
   /** Arte conceitual do jogo de tabuleiro (fornecida pelo projeto). */
-  arteConceitual: "/assets/conceito/jogo-tabuleiro-conceito.webp",
+  arteConceitual: `${BASE}/assets/conceito/jogo-tabuleiro-conceito.webp`,
   /**
    * [PLACEHOLDER] Logotipo oficial do PSE e brasao da Prefeitura.
    * Quando os arquivos oficiais estiverem disponiveis, coloque-os em
