@@ -1,4 +1,4 @@
-# Plataforma Missões Caramelinho
+# Plataforma Missões do Caramelito
 
 Esta pasta reúne a proposta inicial para transformar o site institucional em uma plataforma com jogos educativos, área de professores e coleta de respostas agregadas.
 
